@@ -8,6 +8,7 @@ const systemRouterMap = {
   department: () => import('@/views/system/department/index'),
   dict: () => import('@/views/system/dict/index'),
   dict_data: () => import('@/views/system/dict/data'),
+  permission_role: () => import('@/views/system/permission/role'),
 }
 
 export default systemRouterMap
