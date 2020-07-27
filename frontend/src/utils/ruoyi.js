@@ -81,7 +81,8 @@ export function selectDictLabel(datas, value) {
 
 // 通用下载方法
 export function download(fileName) {
-  window.location.href = baseURL + '/common/download?fileName=' + encodeURI(fileName) + '&delete=' + true
+  // window.location.href = baseURL + '/common/download?fileName=' + encodeURI(fileName) + '&delete=' + true
+  window.location.href = baseURL + '/report' + fileName
 }
 
 // 字符串格式化(%s )

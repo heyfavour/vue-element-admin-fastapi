@@ -4,14 +4,7 @@
       <!--部门数据-->
       <el-col :span="4" :xs="24">
         <div class="head-container">
-          <el-input
-            v-model="deptName"
-            placeholder="请输入部门名称"
-            clearable
-            size="small"
-            prefix-icon="el-icon-search"
-            style="margin-bottom: 20px"
-          />
+          <el-input v-model="deptName" placeholder="请输入部门名称" clearable size="small" prefix-icon="el-icon-search" style="margin-bottom: 20px" />
         </div>
         <div class="head-container">
           <el-tree ref="tree" :data="deptOptions" :props="defaultProps" :expand-on-click-node="false" :filter-node-method="filterNode" default-expand-all @node-click="handleNodeClick" />
@@ -20,53 +13,16 @@
       <!--用户数据-->
       <el-col :span="20" :xs="24">
         <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-          <el-form-item label="用户名称" prop="userName">
-            <el-input
-              v-model="queryParams.userName"
-              placeholder="请输入用户名称"
-              clearable
-              size="small"
-              style="width: 240px"
-              @keyup.enter.native="handleQuery"
-            />
+          <el-form-item label="用户编号" prop="username">
+            <el-input v-model="queryParams.username" placeholder="请输入用户编号" clearable size="small" style="width: 240px" @keyup.enter.native="handleQuery" />
           </el-form-item>
-          <el-form-item label="手机号码" prop="phonenumber">
-            <el-input
-              v-model="queryParams.phonenumber"
-              placeholder="请输入手机号码"
-              clearable
-              size="small"
-              style="width: 240px"
-              @keyup.enter.native="handleQuery"
-            />
+          <el-form-item label="用户名称" prop="nickname">
+            <el-input v-model="queryParams.nickname" placeholder="请输入用户名称" clearable size="small" style="width: 240px" @keyup.enter.native="handleQuery" />
           </el-form-item>
           <el-form-item label="状态" prop="status">
-            <el-select
-              v-model="queryParams.status"
-              placeholder="用户状态"
-              clearable
-              size="small"
-              style="width: 240px"
-            >
-              <el-option
-                v-for="dict in statusOptions"
-                :key="dict.dictValue"
-                :label="dict.dictLabel"
-                :value="dict.dictValue"
-              />
+            <el-select v-model="queryParams.status" placeholder="用户状态" clearable size="small" style="width: 240px">
+              <el-option v-for="dict in statusOptions" :key="dict.id" :label="dict.label" :value="dict.label" />
             </el-select>
-          </el-form-item>
-          <el-form-item label="创建时间">
-            <el-date-picker
-              v-model="dateRange"
-              size="small"
-              style="width: 240px"
-              value-format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="-"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -76,21 +32,10 @@
 
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
-            <el-button
-              type="primary"
-              icon="el-icon-plus"
-              size="mini"
-              @click="handleAdd"
-            >新增</el-button>
+            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button
-              type="success"
-              icon="el-icon-edit"
-              size="mini"
-              :disabled="single"
-              @click="handleUpdate"
-            >修改</el-button>
+            <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleUpdate">修改</el-button>
           </el-col>
           <el-col :span="1.5">
             <el-button
@@ -134,14 +79,7 @@
             </template>
           </el-table-column>
         </el-table>
-
-        <pagination
-          v-show="total>0"
-          :total="total"
-          :page.sync="queryParams.pageNum"
-          :limit.sync="queryParams.pageSize"
-          @pagination="getList"
-        />
+        <pagination v-show="total>0" :total="total" :page.sync="queryParams.page" :limit.sync="queryParams.limit" @pagination="getList" />
       </el-col>
     </el-row>
 
@@ -240,10 +178,7 @@
         drag
       >
         <i class="el-icon-upload" />
-        <div class="el-upload__text">
-          将文件拖到此处，或
-          <em>点击上传</em>
-        </div>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
         <div slot="tip" class="el-upload__tip">
           <el-checkbox v-model="upload.updateSupport" />是否更新已经存在的用户数据
           <el-link type="info" style="font-size:12px" @click="importTemplate">下载模板</el-link>
@@ -259,7 +194,7 @@
 </template>
 
 <script>
-import { listUser, getUser, delUser, addUser, updateUser, exportUser, resetUserPwd, changeUserStatus, importTemplate } from '@/api/system/user'
+import { listUser, getUser, delUser, addUser, updateUser, exportUser, resetUserPwd, changeUserStatus } from '@/api/system/user'
 import { getToken } from '@/utils/auth'
 import { listDept } from '@/api/system/dept'
 import Treeselect from '@riophae/vue-treeselect'
@@ -290,8 +225,6 @@ export default {
       open: false,
       // 部门名称
       deptName: undefined,
-      // 默认密码
-      initPassword: undefined,
       // 日期范围
       dateRange: [],
       // 状态数据字典
@@ -328,7 +261,7 @@ export default {
         page: 1,
         limit: 10,
         username: undefined,
-        phone: undefined,
+        nickname: undefined,
         status: undefined,
         deptId: undefined
       },
@@ -343,14 +276,6 @@ export default {
         deptId: [
           { required: true, message: '归属部门不能为空', trigger: 'blur' }
         ],
-        // email: [
-        //   { required: true, message: '邮箱地址不能为空', trigger: 'blur' },
-        //   {
-        //     type: 'email',
-        //     message: "'请输入正确的邮箱地址",
-        //     trigger: ['blur', 'change']
-        //   }
-        // ],
         phone: [
           { required: true, message: '手机号码不能为空', trigger: 'blur' },
           {
@@ -362,7 +287,8 @@ export default {
         idendity_card: [
           { required: true, message: '身份证不能为空', trigger: 'blur' }
         ]
-      }
+      },
+      excel_name: 'system_user'
     }
   },
   watch: {
@@ -443,13 +369,12 @@ export default {
       this.form = {
         id: undefined,
         deptId: undefined,
-        userName: undefined,
-        nickName: undefined,
+        username: undefined,
+        nickname: undefined,
         password: undefined,
         phone: undefined,
-        email: undefined,
         sex: undefined,
-        status: '0',
+        status: undefined,
         remark: undefined,
         postIds: [],
         roleIds: []
@@ -469,7 +394,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.userId)
+      this.ids = selection.map(item => item.id)
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
@@ -478,11 +403,10 @@ export default {
       this.reset()
       this.getTreeselect()
       getUser().then(response => {
-        this.postOptions = response.posts
-        this.roleOptions = response.roles
+        this.postOptions = response.data.postOptions
+        this.roleOptions = response.data.roleOptions
         this.open = true
         this.title = '添加用户'
-        this.form.password = this.initPassword
       })
     },
     /** 修改按钮操作 */
@@ -534,7 +458,7 @@ export default {
             })
           } else {
             addUser(this.form).then(response => {
-              if (response.code === 200) {
+              if (response.code === 20000) {
                 this.msgSuccess('新增成功')
                 this.open = false
                 this.getList()
@@ -546,11 +470,9 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const userIds = row.userId || this.ids
-      this.$confirm('是否确认删除用户编号为"' + userIds + '"的数据项?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      const userIds = row.id || this.ids
+      this.$confirm('是否确认删除数据?', '警告', {
+        confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'
       }).then(function() {
         return delUser(userIds)
       }).then(() => {
@@ -578,9 +500,7 @@ export default {
     },
     /** 下载模板操作 */
     importTemplate() {
-      importTemplate().then(response => {
-        this.download(response.msg)
-      })
+      this.download('/template/system_user')
     },
     // 文件上传中处理
     handleFileUploadProgress(event, file, fileList) {

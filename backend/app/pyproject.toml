@@ -16,4 +16,5 @@ alembic
 sqlalchemy
 pytest
 python-jose
-
+aiofiles
+openpyxl

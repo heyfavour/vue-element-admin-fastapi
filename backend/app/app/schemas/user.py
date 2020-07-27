@@ -25,7 +25,9 @@ class UserBase(BaseModel):
 
 # Properties to receive via API on creation
 class UserCreate(UserBase):
-    pass
+    deptId:Optional[int] = None
+    postIds:List[int] = []
+    roleIds:List[int] = []
 
 
 # Properties to receive via API on update
@@ -34,3 +36,6 @@ class UserUpdate(UserBase):
     deptId:Optional[int] = None
     postIds:List[int] = []
     roleIds:List[int] = []
+
+
+

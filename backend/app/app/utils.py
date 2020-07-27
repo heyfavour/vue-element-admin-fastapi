@@ -5,16 +5,16 @@ from typing import Any, Dict, Optional
 
 import emails
 from emails.template import JinjaTemplate
-from jose import  jwt
+from jose import jwt
 
 from app.core.config import settings
 
 
 def send_email(
-    email_to: str,
-    subject_template: str = "",
-    html_template: str = "",
-    environment: Dict[str, Any] = {},
+        email_to: str,
+        subject_template: str = "",
+        html_template: str = "",
+        environment: Dict[str, Any] = {},
 ) -> None:
     assert settings.EMAILS_ENABLED, "no provided configuration for email variables"
     message = emails.Message(
@@ -105,12 +105,19 @@ def verify_password_reset_token(token: str) -> Optional[str]:
     except jwt.JWTError:
         return None
 
+
 def deal_menus(menu):
     """菜单Model生成dict Tree"""
-    meta = {'title': menu.title, "icon": menu.icon, "noCache": menu.noCache, "affix": menu.affix, "order": menu.order}
+    meta = {
+        'title': menu.title,
+        "icon": menu.icon,
+        "noCache": menu.noCache,
+        "affix": menu.affix,
+        "order": menu.order
+    }
     if menu.children:
         children = [deal_menus(menu) for menu in menu.children]
-        children.sort(key=lambda x:x["meta"]["order"])
+        children.sort(key=lambda x: x["meta"]["order"])
         menu_dict = menu.dict()
         menu_dict['children'] = children
     else:
@@ -119,23 +126,33 @@ def deal_menus(menu):
     menu_dict['meta']["roles"] = [role.role_key for role in menu.roles]
     return menu_dict
 
+
 def menus_to_list(menus):
     """菜单dict生成list"""
-    if menus.get("children", []) == []:return [menus,]
+    if menus.get("children", []) == []: return [menus, ]
     children = [menus_to_list(menu)[0] for menu in menus['children']]
     menus.pop("children")
-    menus = [menus,]
+    menus = [menus, ]
     menus.extend(children)
     return menus
 
+
 def tree_children(node):
-    if node.children == []:return node.dict()
-    else:
-        node_dict = node.dict()
-        node_dict["children"] = [tree_children(child) for child in node.children]
-        node_dict["children"] = [tree_children(child) for child in node.children]
+    if node.children == []: return node.dict()
+    node_dict = node.dict()
+    node_dict["children"] = [tree_children(child) for child in node.children]
     return node_dict
 
 
+def list_to_tree(node_list, root_id=None):
+    node_dict = {node["id"]: node if node.get("parent_id") else node.update({"parent_id": -1}) or node for node in node_list}
+    for node in node_list:
+        node_dict.setdefault(node["parent_id"], {}).setdefault("children", []).append(node)
+    return node_dict[root_id if root_id else -1]
 
 
+def get_list_id_by_tree(nodes):
+    ids = [nodes["id"], ]
+    if nodes.get("children"):
+        for node in nodes["children"]: ids = ids + get_list_id_by_tree(node)
+    return ids
