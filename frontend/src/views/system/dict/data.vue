@@ -179,7 +179,7 @@ export default {
       listData(this.queryParams).then(response => {
         this.dataList = response.data.items
         this.total = response.data.total
-        this.loading = false
+        // this.loading = false
       })
     },
     // 取消按钮

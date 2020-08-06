@@ -49,18 +49,18 @@ class ServerNamespace(socketio.AsyncNamespace):
 
     async def background_task(self):
         while True:
-            sys_info =await self.get_sys_info()
+            sys_info = self.get_sys_info()
             await self.emit('monitor_server', sys_info)
-            await self.server.sleep(1.5)
+            await self.server.sleep(4)
 
-    async def get_sys_info(self):
+    def get_sys_cpu(self):
         sys_info = {}
         cpu_info = {
-            'cpuNum': psutil.cpu_count(logical=False),  # 物理核数
-            'used': psutil.cpu_percent(interval=0.1),  # cpu使用率
+            'cpu_count': psutil.cpu_count(logical=False),  # 物理核数
+            'cpu_percent': psutil.cpu_percent(interval=0.1),  # cpu使用率
             'pids': len(psutil.pids()),  # 进程数
-            'cpu_freq': psutil.cpu_freq().current,  # CPU频率
-            'boot_time': round_float(psutil.boot_time() / (60 * 60 * 60 * 24)),  # 系统启动时间
+            'cpu_freq': psutil.cpu_freq(),  # CPU频率
+            'boot_time': psutil.boot_time() / (60 * 60 * 60 * 24),  # 系统启动时间
         }
         sys_info["cpu_info"] = cpu_info
         memory_info = psutil.virtual_memory()

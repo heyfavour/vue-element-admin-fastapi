@@ -156,3 +156,11 @@ def get_list_id_by_tree(nodes):
     if nodes.get("children"):
         for node in nodes["children"]: ids = ids + get_list_id_by_tree(node)
     return ids
+
+
+def round_float(float_num,num=2):
+    import decimal
+    # 四舍五入
+    context = decimal.getcontext()
+    context.rounding = decimal.ROUND_HALF_UP
+    return float(round(decimal.Decimal(str(float_num)), num))
