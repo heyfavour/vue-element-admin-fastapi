@@ -18,3 +18,4 @@ pytest
 python-jose
 aiofiles
 openpyxl
+python-socketio
