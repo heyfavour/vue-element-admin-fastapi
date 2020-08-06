@@ -3,7 +3,7 @@
 import Layout from '@/layout'
 
 const systemRouterMap = {
-  monitor: () => import('@/views/monitor/index'),
+  server: () => import('@/views/monitor/server/index'),
 }
 
 export default systemRouterMap

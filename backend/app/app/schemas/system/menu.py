@@ -10,18 +10,15 @@ from pydantic import BaseModel
 # Shared properties
 class MenuBase(BaseModel):
     path : str
-    component : str
     hidden :bool
     menu_type : str
-    external_link :bool
-    parent_id: Optional[int] = None
-    #meta
-    name : str
+
+
     title : str
     icon : str
     noCache :bool
     order :int
-    parent_id:Optional[int] = None
+
 
 
 # Properties to receive on item creation
@@ -34,19 +31,11 @@ class MenuUpdate(MenuBase):
     id: int
     alwaysShow :bool
     redirect : Optional[str] = None
-    affix :bool
+    affix :Optional[bool] = False
+    parent_id:Optional[int] = None
+    external_link :Optional[bool] = False
+    component : Optional[str] = None
+    #meta
+    name : Optional[str] = None
 
 
-# Properties shared by models stored in DB
-class MenuInDBBase(MenuBase):
-    pass
-
-
-# Properties to return to client
-class Menu(MenuInDBBase):
-    pass
-
-
-# Properties properties stored in DB
-class MenuInDB(MenuInDBBase):
-    pass

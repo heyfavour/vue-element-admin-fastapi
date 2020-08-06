@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
+from app.api.api_v1.websocket import socket_app
 
 import os
-if os.name in ('posix'): 
+if os.name in ('posix'):
     os.sys.path.append(os.getcwd() + "/..")
 else:
     os.sys.path.append(os.getcwd() + "\\..")
@@ -26,7 +27,9 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
     )
 
+
 app.include_router(api_router, prefix=settings.API_V1_STR)
+app.mount('/', socket_app)
 
 if __name__ == '__main__':
     import uvicorn

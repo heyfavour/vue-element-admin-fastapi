@@ -31,7 +31,9 @@ def read_menu_id(menu_id: int,current_user: models.User = Depends(deps.get_curre
     return {"code": 20000,"data": menu,"message":"",}
 
 @router.put("", response_model=schemas.Response)
-def update_menu(*,db: Session = Depends(deps.get_db),menu_in: schemas.MenuUpdate, current_user: models.User = Depends(deps.get_current_active_user),) -> Any:
+def update_menu(*,db: Session = Depends(deps.get_db),menu_in: schemas.MenuUpdate,
+                # current_user: models.User = Depends(deps.get_current_active_user),
+                ) -> Any:
     """
     Get a specific menu by id.
     """
