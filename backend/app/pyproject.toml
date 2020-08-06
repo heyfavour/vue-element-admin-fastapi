@@ -19,3 +19,4 @@ python-jose
 aiofiles
 openpyxl
 python-socketio
+psutil
