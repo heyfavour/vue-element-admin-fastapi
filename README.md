@@ -1,9 +1,9 @@
 # vue-element-admin-fastapi
 vue-element-admin-fastpai
 
-已经完成用户，权限组，菜单等基础功能。但是一些细的功能点的接口都没写，（增删改查遗漏那么一两个功能点样子)  
-前端使用vue-element-admin的框架，部分组件模仿的ruoyi-vue-ui的，但是没使用其按钮权限控制，在生产中感觉精确到按钮级别少且冗余。  
-后端使用fastapi框架模仿的Full Stack FastAPI and PostgreSQL，但是模块化以后方便拓展。
+已完成用户，权限组，菜单等基础功能。(一些细的功能点的接口都没写，增删改查遗漏那么一两个功能点样子)    
+前端使用vue-element-admin的框架，部分组件模仿ruoyi-vue-ui的，但是没使用其按钮权限控制，在生产中感觉精确到按钮级别少且冗余。  
+后端使用fastapi,模仿Full Stack FastAPI and PostgreSQL，但是模块化以后方便拓展。
 
 #### socket.io
 前端使用了socket.io-client  
@@ -15,10 +15,10 @@ PS:吐槽下网上的资料要么不全要么不对，最后还是跟着文档�
 
 
 #### DEMO:http://49.235.242.224:9527/  
-因为项目的commit是放在deps中统一提交的，然后demo中被我注释了，所以大家的操作不会被保存。有些功能还没写来得及写，后期会慢慢完善。
+因为项目的commit是放在deps中统一提交的，demo中被我注释了，所以大家的操作不会被保存。有些功能还没写来得及写，后期会慢慢完善。
 
 #### 后期待开发：  
-1.晚上已有功能  
+1.完善已有功能  
 2.excel配置导出 再report模块下，支持合并。但是还没想好怎么和前端结合。  
 3.报表敏捷开发  
 4.思考ing  
