@@ -72,15 +72,6 @@
               <el-input-number v-model="form.order" controls-position="right" :min="0" />
             </el-form-item>
           </el-col>
-
-          <!--          <el-col :span="12">-->
-          <!--            <el-form-item v-if="form.menu_type !== 'F'" label="是否外链">-->
-          <!--              <el-radio-group v-model="form.external_link">-->
-          <!--                <el-radio :label="true">是</el-radio>-->
-          <!--                <el-radio :label="false">否</el-radio>-->
-          <!--              </el-radio-group>-->
-          <!--            </el-form-item>-->
-          <!--          </el-col>-->
           <el-col :span="12">
             <el-form-item v-if="form.menu_type !== 'F'" label="路由地址" prop="path">
               <el-input v-model="form.path" placeholder="请输入路由地址" />

@@ -30,9 +30,10 @@ def read_menu_id(menu_id: int,current_user: models.User = Depends(deps.get_curre
     if menu.parent_id is None:
         menu = menu.dict()
         menu['parent_id'] = 0#如果使用menu.parent_id = 0 会触发commit报错
+        print(menu)
     return {"code": 20000,"data": menu,"message":"",}
 
-@router.put("", response_model=schemas.Response)
+@router.put("/", response_model=schemas.Response)
 def update_menu(*,db: Session = Depends(deps.get_db),menu_in: schemas.MenuUpdate,
                 # current_user: models.User = Depends(deps.get_current_active_user),
                 ) -> Any:
@@ -58,7 +59,7 @@ def read_menu_id(menu_id: int,current_user: models.User = Depends(deps.get_curre
     return {"code": 20000,"data": "","message":"删除成功。删除了{n}个菜单".format(n=menu)}
 
 
-@router.post("", response_model=schemas.Response)
+@router.post("/", response_model=schemas.Response)
 def post_menu(*, db: Session = Depends(deps.get_db),
                     menu: schemas.MenuCreate,
                     current_user: models.User = Depends(deps.get_current_active_user)

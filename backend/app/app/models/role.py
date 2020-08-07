@@ -32,7 +32,7 @@ class Menu(Base):
     roles = relationship("Role_Menu", backref="menus")
 
     def dict(self):
-        return {c.name: getattr(self, c.name, None) for c in self.__table__.columns if getattr(self, c.name, None) != False and getattr(self, c.name, None) != None}
+        return {c.name: getattr(self, c.name, None) for c in self.__table__.columns if getattr(self, c.name, None) != None}
 
 class Role(Base):
     """权限组"""
