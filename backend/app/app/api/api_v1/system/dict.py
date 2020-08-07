@@ -114,7 +114,9 @@ def read_routes(*, db: Session = Depends(deps.get_db),id: int,current_user: mode
     }
 
 @router.put("/data", response_model=schemas.Response)
-def read_routes(*, db: Session = Depends(deps.get_db),data_in: schemas.DictDataUpdate,current_user: models.User = Depends(deps.get_current_active_user)) -> Any:
+def read_routes(*, db: Session = Depends(deps.get_db),data_in: schemas.DictDataUpdate,
+                # current_user: models.User = Depends(deps.get_current_active_user)
+                ) -> Any:
     """
     Retrieve Mock Data.
     """
