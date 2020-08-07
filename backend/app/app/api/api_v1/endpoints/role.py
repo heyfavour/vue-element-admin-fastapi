@@ -79,7 +79,6 @@ def update_roles(
         for index,menu in enumerate(role_menu):
             role_menu = {"role_id":role.id,"role_key":role.key,"menu_id":menu['id']}
             db.add(models.Role_Menu(**role_menu))
-    db.commit()
     return {"code": 20000, "data":{"status":"success"}}
 
 
@@ -105,7 +104,6 @@ def create_role(
         for index,menu in enumerate(role_menu):
             role_menu = {"role_id":role.id,"role_key":role.key,"menu_id":menu['id']}
             db.add(models.Role_Menu(**role_menu))
-    db.commit()
     return {"code": 20000, "data": {"key":role_in.key}}
 
 @router.delete("/{id}", response_model=schemas.Response)
@@ -120,6 +118,5 @@ def delete_item(
     """
     db.query(models.Role_Menu).filter(models.Role_Menu.role_key == id).delete()
     db.query(models.Role).filter(models.Role.key == id).delete()
-    db.commit()
 
     return {"code": 20000, "data":{"status":"success"}}

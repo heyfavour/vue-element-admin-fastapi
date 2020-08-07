@@ -18,7 +18,7 @@ def read_routes(name: Optional[str] = None, hidden: Optional[bool] = None, db: S
     """
     menus = db.query(models.Menu).options(joinedload_all(models.Menu.children,models.Menu.roles)).filter(models.Menu.parent_id == None
             ).order_by(models.Menu.order).all()
-    menus = [deal_menus(menu) for menu in menus]
+    menus = [deal_menus(menu) for menu in menus]#涉及权限等，暂不好一次list_to_tree处理
     return {"code": 20000,"data": menus}
 
 @router.get("/{menu_id}", response_model=schemas.Response)
@@ -27,7 +27,9 @@ def read_menu_id(menu_id: int,current_user: models.User = Depends(deps.get_curre
     Get a specific menu by id.
     """
     menu = db.query(models.Menu).filter(models.Menu.id == menu_id).one()
-    if menu.parent_id is None:menu.parent_id = 0
+    if menu.parent_id is None:
+        menu = menu.dict()
+        menu['parent_id'] = 0#如果使用menu.parent_id = 0 会触发commit报错
     return {"code": 20000,"data": menu,"message":"",}
 
 @router.put("", response_model=schemas.Response)
@@ -35,7 +37,6 @@ def update_menu(*,db: Session = Depends(deps.get_db),menu_in: schemas.MenuUpdate
                 # current_user: models.User = Depends(deps.get_current_active_user),
                 ) -> Any:
     """
-    Get a specific menu by id.
     """
     #目录菜单组件放#
     menu_in.alwaysShow = False
@@ -45,7 +46,6 @@ def update_menu(*,db: Session = Depends(deps.get_db),menu_in: schemas.MenuUpdate
     #ruoyi 在菜单展示的时候加了一个主目录 会需要parent_id
     if menu_in.parent_id == 0:menu_in.parent_id = None
     db.query(models.Menu).filter(models.Menu.id == menu_in.id).update(menu_in)
-    db.commit()
     return {"code": 20000,"data": "","message":"修改成功",}
 
 @router.delete("/{menu_id}", response_model=schemas.Response)
@@ -55,7 +55,6 @@ def read_menu_id(menu_id: int,current_user: models.User = Depends(deps.get_curre
     """
     roles = db.query(models.Role_Menu).filter(models.Role_Menu.menu_id == menu_id).delete()
     menu = db.query(models.Menu).filter(models.Menu.id == menu_id).delete()
-    db.commit()
     return {"code": 20000,"data": "","message":"删除成功。删除了{n}个菜单".format(n=menu)}
 
 
@@ -68,7 +67,6 @@ def post_menu(*, db: Session = Depends(deps.get_db),
     Get a specific menu by id.
     """
     db.add(models.Menu(**jsonable_encoder(menu)))
-    db.commit()
     return {"code": 20000,"data": "","message":"新增菜单成功"}
 
 

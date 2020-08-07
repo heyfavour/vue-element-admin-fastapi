@@ -147,7 +147,6 @@ def update_user(*,db: Session = Depends(deps.get_db),user:schemas.UserUpdate,cur
     user_roles = [{"user_id": user_id, "role_id": i} for i in roleIds]
     db.bulk_insert_mappings(models.User_Role,user_roles)
     db.flush()
-    db.commit()
     return {
         "code": 20000,
         "data": "",
@@ -196,7 +195,6 @@ def add_user(*, db: Session = Depends(deps.get_db), user: schemas.UserCreate,
     user_roles = [{"user_id": add_user.id, "role_id": i} for i in roleIds]
     db.bulk_insert_mappings(models.User_Role,user_roles)
     db.flush()
-    db.commit()
     return {
         "code": 20000,
         "data": "",
@@ -215,7 +213,6 @@ def reset_password(
     }
     if User.is_superuser or User.id == user_id:
         db.query(models.User).filter(models.User.id == user_id).update(data)
-        db.commit()
         return { "code": 20000,"data": "","message": "修改成功",}
     else:
         return { "code": 40000,"data": "","message": "无修改权限",}
@@ -230,7 +227,6 @@ def delete_user(*, db: Session = Depends(deps.get_db), ids : str,
     db.query(models.User_Department).filter(models.User_Department.user_id.in_(ids)).delete(synchronize_session=False)
     db.query(models.User_Role).filter(models.User_Role.user_id.in_(ids)).delete(synchronize_session=False)
     db.query(models.User).filter(models.User.id.in_(ids)).delete(synchronize_session=False)
-    db.commit()
     return {
         "code": 20000,
         "data": "",

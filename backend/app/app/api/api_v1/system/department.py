@@ -75,7 +75,6 @@ def read_routes(*, db: Session = Depends(deps.get_db),data_in: schemas.Departmen
     Retrieve Mock Data.
     """
     db.query(models.Department).filter(models.Department.id == data_in.id).update(data_in)
-    db.commit()
     return {
         "code": 20000,
         "data": "",
