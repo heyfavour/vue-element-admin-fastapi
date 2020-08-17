@@ -1,0 +1,4 @@
+id,key,name,description
+1,admin,admin,管理员
+2,editor,editor,编辑人员
+3,visitor,visitor,访客

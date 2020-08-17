@@ -1,0 +1,3 @@
+id,hashed_password,is_active,is_superuser,nickname,username,avatar,introduction,address,identity_card,work_start,phone,sex,status
+1,$2b$12$hT6SXz0Q1MoK5F2YnhSnUePJzAKtQcnsQ2qQDqjP1M95Ab10uVgyi,1,1,系统管理员,admin,https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif,管理员账户,,999999999999999999,,19999999999,男,在职
+9,$2b$12$26K5Qbm8MkRj2l5G3HxWIeNRQhFBICSmDyYRHA1HNBqdpVPO.3nlC,1,0,测试01,A000001,,,,999999999999999999,,18999999999,男,在职
