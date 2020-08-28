@@ -21,3 +21,4 @@ openpyxl
 python-socketio
 psutil
 bcrypt
+mysqlclient
