@@ -20,3 +20,4 @@ aiofiles
 openpyxl
 python-socketio
 psutil
+bcrypt
