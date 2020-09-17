@@ -13,8 +13,8 @@ PS:吐槽下网上的资料要么不全要么不对，最后还是跟着文档�
 #### celery
 celery-redis  
 celery-app配置位于backend\app\app\celery_app\celery_app.py  
-woker代码位于backend\app\app\celery_app\worker\目录下，用于不同的woker模块区分 
-start celery:sh backend\app\worker-start.sh  
+woker代码位于backend\app\app\celery_app\worker\目录下，用于不同的woker模块区分  
+start celery:sh backend\app\worker-start.sh   
 DEMO_URL:/utils/test-celery 可以发送邮件  
 
 代码就那样，模块化做的还行。socket-io因为网上资料不多，也可以参考看看。
