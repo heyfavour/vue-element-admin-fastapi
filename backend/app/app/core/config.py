@@ -10,7 +10,7 @@ class Settings():
     # 60 minutes * 24 hours * 8 days = 8 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     # SERVER_NAME: str
-    # SERVER_HOST: AnyHttpUrl
+    # SERVER_HOST: str = "smtp.qq.com"
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
     # e.g: '["http://localhost", "http://localhost:4200", "http://localhost:3000", \
     # "http://localhost:8080", "http://local.dockertoolbox.tiangolo.com"]'
@@ -24,7 +24,7 @@ class Settings():
     #         return v
     #     raise ValueError(v)
 
-    PROJECT_NAME: str = "fastapi_app"
+    PROJECT_NAME: str = "Vue-Element-Admin-Fastapi"
     # SENTRY_DSN: Optional[HttpUrl] = None
 
     # @validator("SENTRY_DSN", pre=True)
@@ -52,12 +52,12 @@ class Settings():
     #     )
 
     SMTP_TLS: bool = False
-    # SMTP_PORT: Optional[int] = None
-    # SMTP_HOST: Optional[str] = None
-    # SMTP_USER: Optional[str] = None
-    # SMTP_PASSWORD: Optional[str] = None
-    # EMAILS_FROM_EMAIL: Optional[EmailStr] = None
-    # EMAILS_FROM_NAME: Optional[str] = None
+    SMTP_PORT: Optional[int] = 587
+    SMTP_HOST: Optional[str] = "smtp.qq.com"
+    SMTP_USER: Optional[str] = "619511821@qq.com"
+    SMTP_PASSWORD: Optional[str] = "efgjrswetsnybdif"
+    EMAILS_FROM_EMAIL: Optional[EmailStr] = "619511821@qq.com"
+    EMAILS_FROM_NAME: Optional[str] = "Mr.Wang"
 
     # # @validator("EMAILS_FROM_NAME")
     # def get_project_name(cls, v: Optional[str], values: Dict[str, Any]) -> str:
@@ -66,18 +66,13 @@ class Settings():
     #     return v
     #
     # EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 48
-    # EMAIL_TEMPLATES_DIR: str = "/app/app/email-templates/build"
-    # EMAILS_ENABLED: bool = False
+    EMAIL_TEMPLATES_DIR: str = "app/email-templates/build"
+    EMAILS_ENABLED: bool = True
     #
-    # # @validator("EMAILS_ENABLED", pre=True)
-    # def get_emails_enabled(cls, v: bool, values: Dict[str, Any]) -> bool:
-    #     return bool(
-    #         values.get("SMTP_HOST")
-    #         and values.get("SMTP_PORT")
-    #         and values.get("EMAILS_FROM_EMAIL")
-    #     )
-    #
-    # EMAIL_TEST_USER: EmailStr = "test@example.com"  # type: ignore
+    @validator("EMAILS_ENABLED", pre=True)
+    def get_emails_enabled(cls, v: bool, values: Dict[str, Any]) -> bool:
+        return bool(values.get("SMTP_HOST") and values.get("SMTP_PORT") and values.get("EMAILS_FROM_EMAIL"))
+
     FIRST_SUPERUSER: str = "admin"
     FIRST_SUPERUSER_EMAIL: str = "619511821@qq.com"
     FIRST_SUPERUSER_PASSWORD: str =  "qwe123"

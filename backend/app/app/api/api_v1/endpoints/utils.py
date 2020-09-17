@@ -7,20 +7,19 @@ from app import models, schemas
 from app.api import deps
 from app.celery_app.celery_app import celery_app
 from app.utils import send_test_email
-
+from app.celery_app.worker.example import test_celery
 router = APIRouter()
 
 
 @router.post("/test-celery/", response_model=schemas.Msg, status_code=201)
-def test_celery(
-    msg: schemas.Msg,
-    # current_user: models.User = Depends(deps.get_current_active_superuser),
-) -> Any:
+def test_celery1(msg: schemas.Msg,
+                 #current_user: models.User = Depends(deps.get_current_active_superuser),
+                 ) -> Any:
     """
     Test Celery worker.
     """
-    result = celery_app.send_task("example.test_celery", args=[msg.msg])
-    #result.get()
+    result = celery_app.send_task("app.celery_app.worker.example.test_celery", args=[msg.msg])
+    # result.get()
     return {"msg": "Word received"}
 
 

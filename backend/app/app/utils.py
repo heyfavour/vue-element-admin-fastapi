@@ -23,18 +23,23 @@ def send_email(email_to: str, subject_template: str = "", html_template: str = "
     if settings.SMTP_PASSWORD:smtp_options["password"] = settings.SMTP_PASSWORD
     response = message.send(to=email_to, render=environment, smtp=smtp_options)
     logging.info(f"send email result: {response}")
+    assert response.status_code == 250
 
 
 def send_test_email(email_to: str) -> None:
     project_name = settings.PROJECT_NAME
-    subject = f"{project_name} - Test email"
-    with open(Path(settings.EMAIL_TEMPLATES_DIR) / "test_email.html") as f:
-        template_str = f.read()
+    subject = f"{project_name}-Test"
+    with open(Path(settings.EMAIL_TEMPLATES_DIR) / "test_email.html") as f:template_str = f.read()
     send_email(
         email_to=email_to,
-        subject_template=subject,
+        subject_template=subject,#主题
         html_template=template_str,
-        environment={"project_name": settings.PROJECT_NAME, "email": email_to},
+        environment={
+            "project_name": settings.PROJECT_NAME,
+            "email": email_to,
+            "msg":"这是一封测试邮件",
+            "emails_from_name":"Mr.Wang"
+        },#html template parameters
     )
 
 

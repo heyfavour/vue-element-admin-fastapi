@@ -9,8 +9,8 @@
     CMD后台启动一个或多个职程
     celery multi start w1 -A {worker_name} -l info
 """
-import os
 from app.celery_app.celery_app import celery_app
+from app.utils import send_test_email
 
 
 # 用于SENTRY异常报告
@@ -19,12 +19,6 @@ from app.celery_app.celery_app import celery_app
 
 
 @celery_app.task(acks_late=True, )
-def test_celery(word: str) -> str:
-    import time
-    time.sleep(3)
-    return f"test task return {word}"
-
-
-if __name__ == '__main__':
-    celery_app.worker_main()
-
+def test_celery(email_to: str) -> str:
+    send_test_email(email_to=email_to)
+    return f"email sending"
