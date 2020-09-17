@@ -10,6 +10,12 @@ vue-element-admin-fastpai
 后端使用了python-socketio，使用异步类试图的情况来区分命名空间。通过fastapi挂载scoet_app的方式。  
 PS:吐槽下网上的资料要么不全要么不对，最后还是跟着文档全做了一遍.也放弃了使用vue-socket-io。反正socket-io也挺好的
 
+#### celery
+celery-redis
+celery-app配置位于backend\app\app\celery_app\celery_app.py
+woker代码位于backend\app\app\celery_app\worker\目录下，用于不同的woker模块区分
+start celery:sh backend\app\worker-start.sh
+DEMO_URL:/utils/test-celery 可以发送邮件
 
 代码就那样，模块化做的还行。socket-io因为网上资料不多，也可以参考看看。
 
@@ -32,5 +38,3 @@ PS:吐槽下网上的资料要么不全要么不对，最后还是跟着文档�
 
 #### 联系方式：
 QQ：619511821
-
-正在集成celery
