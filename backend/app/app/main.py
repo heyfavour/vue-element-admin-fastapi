@@ -1,13 +1,6 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-
-import os
-if os.name in ('posix'):
-    os.sys.path.append(os.getcwd() + "/..")
-else:
-    os.sys.path.append(os.getcwd() + "\\..")
-
 from app.api.api_v1.api import api_router
 from app.core.config import settings
 from app.api.api_v1.websocket import socket_app

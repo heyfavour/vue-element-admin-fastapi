@@ -8,4 +8,4 @@ celery_app = Celery(
     imports = ('worker',)#
 )
 # 处理队列 如果不定义会进入默认队列
-#celery_app.conf.task_routes = {"app.worker.test_celery: "celery"}
+celery_app.conf.task_routes = {" app.celery_app.worker.example.*": "main-queue"}

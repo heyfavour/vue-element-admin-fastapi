@@ -1,0 +1,21 @@
+### python package
+```
+pip install -r pyproject.tml
+```
+#### init db
+```
+sh prestart.sh
+```
+#### app start
+```
+python app/main.py
+```
+
+
+#### celery start
+```
+sh worker-start.sh
+#IF YOU IN WINDOWS YOU SHOULD USE  COMMON
+# celery worker -A app.celery_app.worker.example -l info -Q main-queue -c 1  -P eventlet
+```
+

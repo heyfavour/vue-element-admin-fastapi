@@ -10,12 +10,7 @@ from jose import jwt
 from app.core.config import settings
 
 
-def send_email(
-        email_to: str,
-        subject_template: str = "",
-        html_template: str = "",
-        environment: Dict[str, Any] = {},
-) -> None:
+def send_email(email_to: str, subject_template: str = "", html_template: str = "",environment: Dict[str, Any] = {}, ) -> None:
     assert settings.EMAILS_ENABLED, "no provided configuration for email variables"
     message = emails.Message(
         subject=JinjaTemplate(subject_template),
@@ -23,12 +18,9 @@ def send_email(
         mail_from=(settings.EMAILS_FROM_NAME, settings.EMAILS_FROM_EMAIL),
     )
     smtp_options = {"host": settings.SMTP_HOST, "port": settings.SMTP_PORT}
-    if settings.SMTP_TLS:
-        smtp_options["tls"] = True
-    if settings.SMTP_USER:
-        smtp_options["user"] = settings.SMTP_USER
-    if settings.SMTP_PASSWORD:
-        smtp_options["password"] = settings.SMTP_PASSWORD
+    if settings.SMTP_TLS:smtp_options["tls"] = True
+    if settings.SMTP_USER:smtp_options["user"] = settings.SMTP_USER
+    if settings.SMTP_PASSWORD:smtp_options["password"] = settings.SMTP_PASSWORD
     response = message.send(to=email_to, render=environment, smtp=smtp_options)
     logging.info(f"send email result: {response}")
 
@@ -145,7 +137,8 @@ def tree_children(node):
 
 
 def list_to_tree(node_list, root_id=None):
-    node_dict = {node["id"]: node if node.get("parent_id") else node.update({"parent_id": -1}) or node for node in node_list}
+    node_dict = {node["id"]: node if node.get("parent_id") else node.update({"parent_id": -1}) or node for node in
+                 node_list}
     for node in node_list:
         node_dict.setdefault(node["parent_id"], {}).setdefault("children", []).append(node)
     return node_dict[root_id if root_id else -1]
@@ -158,7 +151,7 @@ def get_list_id_by_tree(nodes):
     return ids
 
 
-def round_float(float_num,num=2):
+def round_float(float_num, num=2):
     import decimal
     # 四舍五入
     context = decimal.getcontext()

@@ -19,9 +19,8 @@ def test_celery(
     """
     Test Celery worker.
     """
-    print(msg,msg,">>>>>>>>")
-    result = celery_app.send_task("worker.test_celery", args=[msg.msg])
-    print(result.get())
+    result = celery_app.send_task("example.test_celery", args=[msg.msg])
+    #result.get()
     return {"msg": "Word received"}
 
 
