@@ -1,5 +1,5 @@
 uvicorn
-fastapi==0.60.2
+fastapi
 python-multipart
 email-validator
 requests
