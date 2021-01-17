@@ -1,35 +1,18 @@
-from sqlalchemy.orm import Session
-
-import os
-from app import crud, schemas
-from app.core.config import settings
-from app.db.session import SessionLocal,engine
-from app.db import base  # noqa: F401
+import os, logging
 import pandas as pd
-# make sure all SQL Alchemy models are imported (app.db.modules) before initializing DB
-# otherwise, SQL Alchemy might fail to initialize relationships properly
-# for more details: https://github.com/tiangolo/full-stack-fastapi-postgresql/issues/28
+
+from app.db.session import engine
+
+logger = logging.getLogger(__name__)
 
 
-def init_db(db: Session) -> None:
+def init_db() -> None:
     # Tables should be created with Alembic migrations
-    # But if you don't want to use migrations, create
-    # the tables un-commenting the next line
-    # Base.metadata.create_all(bind=engine)
-    path = os.getcwd()
-    if os.name in ('posix'):
-        init_data_path = os.getcwd() + "/db/init_data"
-    else:
-        init_data_path = os.getcwd() + "\\db\\init_data"
-    files = os.listdir(init_data_path)
-    print(files)
+    init_data_path = os.path.join(os.getcwd(), "db", "init_data")
+    files = ['department.csv', 'menu.csv', 'role.csv', 'user.csv', 'dict_type.csv', 'dict_data.csv',
+             'role_menu.csv', 'user_department.csv', 'user_dict.csv', 'user_role.csv', ]
     for file in files:
-        print(file)
-        if "csv" not in file:continue
-        try:
-            df  = pd.read_csv(init_data_path+"/"+file, sep=",")
-        except:
-            continue
-        df.to_sql(file.replace(".csv",""),engine,if_exists="append",index=False)
-
-
+        file_path = os.path.join(init_data_path, file)
+        df = pd.read_csv(file_path, sep=",")
+        logger.info(f"{file}  load successed")
+        df.to_sql(file.replace(".csv", ""), engine, if_exists="append", index=False)

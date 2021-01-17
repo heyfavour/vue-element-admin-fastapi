@@ -1,6 +1,6 @@
-id,name,title,path,component,hidden,alwaysShow,icon,affix,noCache,redirect,order,parent_id,menu_type,external_link
-516,RolePermission,角色权限,role,permission_role,0,0,peoples,0,1,,5,519.0,C,0
+id,name,title,path,component,hidden,always_show,icon,affix,no_cache,redirect,order,parent_id,menu_type,external_link
 519,,系统管理,/system,#,0,1,system,0,0,,1,,M,0
+516,RolePermission,角色权限,role,permission_role,0,0,peoples,0,1,,5,519.0,C,0
 520,Menu,菜单管理,menu,menu,0,0,tree-table,0,0,,1,519.0,C,0
 522,Dict,字典管理,dict,dict,0,0,dict,0,0,,2,519.0,C,0
 523,Data,字典数据,/dict/type/data/:id?,dict_data,1,0,dict,0,0,,3,519.0,C,0
