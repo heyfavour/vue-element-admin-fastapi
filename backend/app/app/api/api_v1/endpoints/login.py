@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import Any
 
-from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
@@ -9,21 +9,13 @@ from app import crud, models, schemas
 from app.api import deps
 from app.core import security
 from app.core.config import settings
-from app.core.security import get_password_hash
-from app.utils import (
-    generate_password_reset_token,
-    send_reset_password_email,
-    verify_password_reset_token,
-)
 
 router = APIRouter()
 
 
 @router.post("/login/token", response_model=schemas.Response)
 def login_token(db: Session = Depends(deps.get_db), form_data: OAuth2PasswordRequestForm = Depends()) -> Any:
-    """
-    OAuth2 compatible token login, get an access token for future requests
-    """
+    """Web Login Api"""
     user = crud.user.authenticate(db, username=form_data.username, password=form_data.password)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect email or password")
@@ -42,9 +34,7 @@ def login_token(db: Session = Depends(deps.get_db), form_data: OAuth2PasswordReq
 
 @router.post("/login/access-token", response_model=schemas.Token)
 def login_access_token(db: Session = Depends(deps.get_db), form_data: OAuth2PasswordRequestForm = Depends()) -> Any:
-    """
-    OAuth2 compatible token login, get an access token for future requests
-    """
+    """OAuth2 compatible token login, get an access token for future requests"""
     user = crud.user.authenticate(db, username=form_data.username, password=form_data.password)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect email or password")
@@ -60,7 +50,5 @@ def login_access_token(db: Session = Depends(deps.get_db), form_data: OAuth2Pass
 @router.post("/logout", response_model=schemas.Response)
 def logout(db: Session = Depends(deps.get_db),
            current_user: models.User = Depends(deps.get_current_active_user), ) -> Any:
-    """
-    logout
-    """
+    """logout"""
     return {"code": 20000, "data": {"logout": True}, "message": "", }
