@@ -30,7 +30,6 @@ class User(Base):
     is_active = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
 
-    items = relationship("Item", back_populates="owner")
     roles = relationship("User_Role", backref="user")
     department = relationship("User_Department", backref="user")
 
