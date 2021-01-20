@@ -1,13 +1,12 @@
-from typing import Any, Dict, Optional,List
+from typing import Any, Optional
 
-from fastapi import APIRouter, Depends, HTTPException,Body,Request
-from sqlalchemy.orm import Session,joinedload_all,contains_eager,Load
-from fastapi.encoders import jsonable_encoder
-from app import crud, models, schemas
+from fastapi import APIRouter, Depends, Body
+from sqlalchemy.orm import Session
+from app import models, schemas
 from app.api import deps
 from app.core.security import get_password_hash
 
-from app.utils import list_to_tree,get_list_id_by_tree
+from app.extensions.utils import list_to_tree,get_list_id_by_tree
 
 router = APIRouter()
 

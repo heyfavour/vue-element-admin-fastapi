@@ -108,7 +108,7 @@ def deal_menus(menu):
     meta = {
         'title': menu.title,
         "icon": menu.icon,
-        "noCache": menu.noCache,
+        "noCache": menu.no_cache,
         "affix": menu.affix,
         "order": menu.order
     }

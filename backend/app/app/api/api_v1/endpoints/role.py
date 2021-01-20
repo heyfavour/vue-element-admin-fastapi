@@ -1,11 +1,10 @@
-from typing import Any, List
+from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException,Body
-from sqlalchemy.orm import Session,joinedload_all,contains_eager,Load
-from fastapi.encoders import jsonable_encoder
-from app import crud, models, schemas
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session,joinedload_all
+from app import models, schemas
 from app.api import deps
-from app.utils import deal_menus
+from app.extensions.utils import deal_menus
 
 router = APIRouter()
 

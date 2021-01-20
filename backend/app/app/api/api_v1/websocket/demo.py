@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 import socketio
 import psutil
-import decimal
-from app.utils import round_float
+from app.extensions.utils import round_float
 
 background_task_started = False
 

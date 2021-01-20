@@ -10,7 +10,7 @@
     celery multi start w1 -A {worker_name} -l info
 """
 from app.celery_app.celery_app import celery_app
-from app.utils import send_test_email
+from app.extensions.utils import send_test_email
 
 
 # 用于SENTRY异常报告

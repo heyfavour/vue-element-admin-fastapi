@@ -16,7 +16,7 @@ class MenuBase(BaseModel):
 
     title : str
     icon : str
-    noCache :bool
+    no_cache :bool
     order :int
 
 
@@ -29,7 +29,7 @@ class MenuCreate(MenuBase):
 # Properties to receive on item update
 class MenuUpdate(MenuBase):
     id: int
-    alwaysShow :bool
+    always_show :bool
     redirect : Optional[str] = None
     affix :Optional[bool] = False
     parent_id:Optional[int] = None
