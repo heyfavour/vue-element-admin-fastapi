@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 import os
-if os.name in ('posix'):
-    os.sys.path.append(os.getcwd() + "/..")
-else:
-    os.sys.path.append(os.getcwd() + "\\..")
-from app.api.api_v1.api import api_router
+
+os.sys.path.append(os.path.join(os.getcwd(), ".."))
+
 from app.core.config import settings
+from app.api.api_v1.api import api_router
 from app.api.api_v1.websocket import socket_app
+from app.extensions.logger import LOGGING_CONFIG
 
 app = FastAPI(
     title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json"
@@ -24,10 +24,12 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
     )
 
-
 app.include_router(api_router, prefix=settings.API_V1_STR)
 app.mount('/', socket_app)
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run(app='main:app', host="0.0.0.0", port=8080, reload=True, debug=True)
+
+    # Don't set debug/reload as True,becauese TimedRotatingFileHandler can't support multi prcoessing
+    # or dont't use my LOGGING_CONFIG
+    uvicorn.run(app='main:app', host="0.0.0.0", port=8080, log_config=LOGGING_CONFIG)
