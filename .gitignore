@@ -1,2 +1,3 @@
 /logs/backend/*
 /logs/celery/*
+*.imi
