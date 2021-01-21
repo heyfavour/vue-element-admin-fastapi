@@ -25,9 +25,9 @@ root:[vue-element-admin-fastapi]
 |      |      |      |--db
 |      |      |      |--db_pre_start
 |      |      |      |--email-templates
-|      |      |      |--extensions					    #logging and utils
-|      |      |      |      |--logger				    #LOG_CONFFIG	uvicorn.run(log_config=LOGGING_CONFIG)
-|      |      |      |--middleware					    #middleware
+|      |      |      |--extensions					      #logging and utils
+|      |      |      |      |--logger				      #LOG_CONFFIG	uvicorn.run(log_config=LOGGING_CONFIG)
+|      |      |      |--middleware					      #middleware
 |      |      |      |--models
 |      |      |      |--schemas
 |      |      |--scripts
