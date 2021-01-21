@@ -4,7 +4,7 @@ vue-element-admin-fastpai
 frontend:vue-element-admin
 backend:fastapi and Full Stack FastAPI and PostgreSQL
 
-
+```
 root:[vue-element-admin-fastapi]
 |--frontend
 |--backend
@@ -34,7 +34,7 @@ root:[vue-element-admin-fastapi]
 |--logs
 |      |--backend
 |      |--celery
-
+```
 #### socket.io
 frontend:socket.io-client  
 backend:python-socketio
