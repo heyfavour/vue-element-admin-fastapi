@@ -1,6 +1,14 @@
 import os
 import logging
 
+
+class ErrorlevelFilter(logging.Filter):
+    def filter(self, record):
+        if record.levelno > logging.INFO:
+            return False
+        return True
+
+
 LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": True,
@@ -17,13 +25,19 @@ LOGGING_CONFIG = {
             'datefmt': '%Y-%m-%d %H:%M:%S',
         },
         "info": {
-            "fmt": '%(levelprefix)s %(asctime)s %(client_addr)s - "%(request_line)s" %(status_code)s',  # noqa: E501
+            "format": '%(levelname)s %(asctime)s %(message)s',
             'datefmt': '%Y-%m-%d %H:%M:%S',
         },
         "error": {
-            "fmt": '%(levelprefix)s %(asctime)s %(client_addr)s - "%(request_line)s" %(status_code)s',  # noqa: E501
+            "format": '%(levelname)s %(asctime)s  "%(filename)s" "%(funcName)s" "%(lineno)s" %(message)s',
             'datefmt': '%Y-%m-%d %H:%M:%S',
         },
+    },
+    'filters': {
+        'info_filter': {
+            '()': ErrorlevelFilter,  # 使用 `()` 指定用哪个类来实现过滤功能
+            'name': 'info_filter'  # name 的值会在 Filter 实例化时传入
+        }
     },
     "handlers": {
         "default": {
@@ -40,6 +54,7 @@ LOGGING_CONFIG = {
             'level': 'INFO',
             'class': 'logging.handlers.TimedRotatingFileHandler',
             'formatter': 'info',
+            'filters': ['info_filter'],
             'filename': os.path.join(os.getcwd(), "..", "..", "..", "logs", "backend", "backend_info.log"),
             'when': 'MIDNIGHT',
             'backupCount': 0  # 保留日志备份数量  0默认不删除
