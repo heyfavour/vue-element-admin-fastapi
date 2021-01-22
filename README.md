@@ -9,25 +9,25 @@ root:[vue-element-admin-fastapi]
 |--frontend
 |--backend
 |      |--app
-|      |      |--alembic							#alembic
+|      |      |--alembic							            #alembic
 |      |      |      |--versions
 |      |      |--app
-|      |      |      |--api							#apis
+|      |      |      |--api							          #apis
 |      |      |      |      |--api_v1
 |      |      |      |      |      |--endpoints
 |      |      |      |      |      |--report
 |      |      |      |      |      |--system
 |      |      |      |      |      |--websocket		#python-socketio,异步类视图区分命名空间	app.mount('/', socket_app) in main
-|      |      |      |--celery_app					#celery
-|      |      |      |      |--worker				#different celery workers
+|      |      |      |--celery_app					      #celery
+|      |      |      |      |--worker				      #different celery workers
 |      |      |      |--core
 |      |      |      |--crud
 |      |      |      |--db
 |      |      |      |--db_pre_start
 |      |      |      |--email-templates
-|      |      |      |--extensions					#logging and utils
-|      |      |      |      |--logger				#LOG_CONFFIG	uvicorn.run(log_config=LOGGING_CONFIG)
-|      |      |      |--middleware					#middleware
+|      |      |      |--extensions					      #logging and utils
+|      |      |      |      |--logger				      #LOG_CONFFIG	uvicorn.run(log_config=LOGGING_CONFIG)
+|      |      |      |--middleware					      #middleware
 |      |      |      |--models
 |      |      |      |--schemas
 |      |      |--scripts
