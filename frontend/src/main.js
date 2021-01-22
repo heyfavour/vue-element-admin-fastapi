@@ -19,13 +19,12 @@ import './icons' // icon
 import './permission' // permission control
 import './utils/error-log' // error log
 import { getDicts } from '@/api/system/dict/data'
-import { parseTime, resetForm, selectDictLabel, download, handleTree } from '@/utils/ruoyi'
+import { resetForm, selectDictLabel, download, handleTree } from '@/utils/ruoyi'
 import Pagination from '@/components/Pagination'
 import * as filters from './filters' // global filters
 
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
-Vue.prototype.parseTime = parseTime
 Vue.prototype.resetForm = resetForm
 Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.download = download
@@ -48,18 +47,6 @@ Vue.component('Pagination', Pagination)
 // 按钮级别权限配置
 // import button_permission from './directive/button_permission'
 // Vue.use(button_permission)
-/**
- * If you don't want to use mock-server
- * you want to use MockJs for mock api
- * you can execute: mockXHR()
- *
- * Currently MockJs will be used in the production environment,
- * please remove it before going online ! ! !
- */
-// if (process.env.NODE_ENV === 'production') {
-//   const { mockXHR } = require('../mock')
-//   mockXHR()
-// }
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size

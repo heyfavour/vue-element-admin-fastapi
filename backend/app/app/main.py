@@ -1,7 +1,17 @@
-from fastapi import FastAPI
 import os
 
 os.sys.path.append(os.path.join(os.getcwd(), ".."))
+from fastapi import routing, FastAPI
+
+
+from app.extensions.routing import APIRouter as MyAPIRouter, APIRoute as MyAPIRoute
+
+# rewrite APIRouter and APIRoute and add parameter exclude_dependencies to deny global dependencies
+routing.APIRouter = MyAPIRouter
+routing.APIRoute = MyAPIRoute
+import fastapi
+fastapi.APIRouter = MyAPIRouter
+fastapi.APIRoute = MyAPIRoute
 
 from app.core.config import settings
 from app.api.api_v1.api import api_router
@@ -15,6 +25,7 @@ app = FastAPI(
 )
 # set middleware
 register_middleware(app)
+
 # set router
 app.include_router(api_router, prefix=settings.API_V1_STR)
 # set socketio

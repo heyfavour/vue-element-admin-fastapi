@@ -13,7 +13,7 @@ from app.core.config import settings
 router = APIRouter()
 
 
-@router.post("/login/token", response_model=schemas.Response)
+@router.post("/login/token", response_model=schemas.Response,exclude_dependencies=True)
 def login_token(db: Session = Depends(deps.get_db), form_data: OAuth2PasswordRequestForm = Depends()) -> Any:
     """Web Login Api"""
     user = crud.user.authenticate(db, username=form_data.username, password=form_data.password)
@@ -32,7 +32,7 @@ def login_token(db: Session = Depends(deps.get_db), form_data: OAuth2PasswordReq
     }
 
 
-@router.post("/login/access-token", response_model=schemas.Token)
+@router.post("/login/access-token", response_model=schemas.Token,exclude_dependencies=True)
 def login_access_token(db: Session = Depends(deps.get_db), form_data: OAuth2PasswordRequestForm = Depends()) -> Any:
     """OAuth2 compatible token login, get an access token for future requests"""
     user = crud.user.authenticate(db, username=form_data.username, password=form_data.password)
