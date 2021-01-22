@@ -48,7 +48,6 @@ def login_access_token(db: Session = Depends(deps.get_db), form_data: OAuth2Pass
 
 
 @router.post("/logout", response_model=schemas.Response)
-def logout(db: Session = Depends(deps.get_db),
-           current_user: models.User = Depends(deps.get_current_active_user), ) -> Any:
+def logout() -> Any:
     """logout"""
     return {"code": 20000, "data": {"logout": True}, "message": "", }
