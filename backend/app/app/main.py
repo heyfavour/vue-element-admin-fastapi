@@ -1,17 +1,14 @@
 import os
 
 os.sys.path.append(os.path.join(os.getcwd(), ".."))
+
+import fastapi
 from fastapi import routing, FastAPI
-
-
 from app.extensions.routing import APIRouter as MyAPIRouter, APIRoute as MyAPIRoute
 
 # rewrite APIRouter and APIRoute and add parameter exclude_dependencies to deny global dependencies
-routing.APIRouter = MyAPIRouter
-routing.APIRoute = MyAPIRoute
-import fastapi
-fastapi.APIRouter = MyAPIRouter
-fastapi.APIRoute = MyAPIRoute
+fastapi.APIRouter = routing.APIRouter = MyAPIRouter
+fastapi.APIRoute = routing.APIRoute = MyAPIRoute
 
 from app.core.config import settings
 from app.api.api_v1.api import api_router
