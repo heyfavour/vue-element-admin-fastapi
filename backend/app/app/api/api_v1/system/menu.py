@@ -1,75 +1,49 @@
 from typing import Any, Optional
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session,joinedload_all
+from sqlalchemy.orm import Session
 from fastapi.encoders import jsonable_encoder
 from app import models, schemas
 from app.api import deps
-from app.extensions.utils import deal_menus
-
+from app.extensions.utils import list_to_tree
 
 router = APIRouter()
+
+
 @router.get("/routes", response_model=schemas.Response)
-def read_routes(name: Optional[str] = None, hidden: Optional[bool] = None, db: Session = Depends(deps.get_db),
-                current_user: models.User = Depends(deps.get_current_active_user)
-                ) -> Any:
-    """
-    Retrieve Mock Data.
-    """
-    menus = db.query(models.Menu).options(joinedload_all(models.Menu.children,models.Menu.roles)).filter(models.Menu.parent_id == None
-            ).order_by(models.Menu.order).all()
-    menus = [deal_menus(menu) for menu in menus]#涉及权限等，暂不好一次list_to_tree处理
-    return {"code": 20000,"data": menus}
+def read_routes(title: Optional[str] = None, db: Session = Depends(deps.get_db)) -> Any:
+    """菜单管理-查询"""
+    menus = db.query(models.Menu)
+    if title: menus = menus.filter(models.Menu.title.like('%' + title + '%'))  # 暂时前端不进行title查询，前端不知道如何展示
+    menus = menus.all()
+    menus = list_to_tree([menu.dict() for menu in menus], order="order")
+    return {"code": 20000, "data": menus}
+
 
 @router.get("/{menu_id}", response_model=schemas.Response)
-def read_menu_id(menu_id: int,current_user: models.User = Depends(deps.get_current_active_user), db: Session = Depends(deps.get_db),) -> Any:
-    """
-    Get a specific menu by id.
-    """
+def read_menu_id(menu_id: int, db: Session = Depends(deps.get_db), ) -> Any:
+    """Get a specific menu by id."""
     menu = db.query(models.Menu).filter(models.Menu.id == menu_id).one()
-    if menu.parent_id is None:
-        menu = menu.dict()
-        menu['parent_id'] = 0#如果使用menu.parent_id = 0 会触发commit报错
-        print(menu)
-    return {"code": 20000,"data": menu,"message":"",}
+    return {"code": 20000, "data": menu, }
+
 
 @router.put("/", response_model=schemas.Response)
-def update_menu(*,db: Session = Depends(deps.get_db),menu_in: schemas.MenuUpdate,
-                # current_user: models.User = Depends(deps.get_current_active_user),
-                ) -> Any:
-    """
-    """
-    #目录菜单组件放#
-    menu_in.alwaysShow = False
-    if menu_in.menu_type == "M":
-        menu_in.component = "#"
-        menu_in.alwaysShow = True
-    #ruoyi 在菜单展示的时候加了一个主目录 会需要parent_id
-    if menu_in.parent_id == 0:menu_in.parent_id = None
+def update_menu(*, db: Session = Depends(deps.get_db), menu_in: schemas.MenuUpdate) -> Any:
+    """update a specific menu by id."""
     db.query(models.Menu).filter(models.Menu.id == menu_in.id).update(menu_in)
-    return {"code": 20000,"data": "","message":"修改成功",}
+    return {"code": 20000, "data": "", "message": "修改成功", }
+
 
 @router.delete("/{menu_id}", response_model=schemas.Response)
-def read_menu_id(menu_id: int,current_user: models.User = Depends(deps.get_current_active_user), db: Session = Depends(deps.get_db),) -> Any:
-    """
-    Get a specific menu by id.
-    """
-    roles = db.query(models.Role_Menu).filter(models.Role_Menu.menu_id == menu_id).delete()
-    menu = db.query(models.Menu).filter(models.Menu.id == menu_id).delete()
-    return {"code": 20000,"data": "","message":"删除成功。删除了{n}个菜单".format(n=menu)}
+def read_menu_id(menu_id: int, db: Session = Depends(deps.get_db), ) -> Any:
+    """Delete a specific menu by id."""
+    db.query(models.Role_Menu).filter(models.Role_Menu.menu_id == menu_id).delete()
+    db.query(models.Menu).filter(models.Menu.id == menu_id).delete()
+    return {"code": 20000, "data": "", "message": f"删除成功"}
 
 
 @router.post("/", response_model=schemas.Response)
-def post_menu(*, db: Session = Depends(deps.get_db),
-                    menu: schemas.MenuCreate,
-                    current_user: models.User = Depends(deps.get_current_active_user)
-                    ) -> Any:
-    """
-    Get a specific menu by id.
-    """
+def post_menu(*, db: Session = Depends(deps.get_db), menu: schemas.MenuCreate, ) -> Any:
+    """Add a specific menu"""
     db.add(models.Menu(**jsonable_encoder(menu)))
-    return {"code": 20000,"data": "","message":"新增菜单成功"}
-
-
-
-
+    return {"code": 20000, "data": "", "message": "新增菜单成功"}
