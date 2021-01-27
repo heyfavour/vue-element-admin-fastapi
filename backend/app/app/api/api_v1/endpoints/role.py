@@ -1,121 +1,101 @@
 from typing import Any
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session,joinedload_all
+from sqlalchemy.orm import Session, joinedload
 from app import models, schemas
 from app.api import deps
-from app.extensions.utils import deal_menus
+from app.extensions.utils import list_to_tree, dfs_tree_to_list
 
 router = APIRouter()
 
 
-
-def menus_to_list(menus):
-    """菜单dict生成list"""
-    if menus.get("children", []) == []:return [menus,]
-    children = [menus_to_list(menu)[0] for menu in menus['children']]
-    menus.pop("children")
-    menus = [menus,]
-    menus.extend(children)
-    return menus
-
-
 @router.get("/routes", response_model=schemas.Response)
-def routes(db: Session = Depends(deps.get_db),current_user: models.User = Depends(deps.get_current_active_user)) -> Any:
-    """
-    Retrieve Mock Data.
-    """
-    menus = db.query(models.Menu).options(joinedload_all(models.Menu.children,models.Menu.roles)).filter(models.Menu.parent_id == None
-            ).order_by(models.Menu.order.asc()).all()
-    menus = [deal_menus(menu) for menu in menus]
-    return {"code": 20000,"data": menus}
+def routes(db: Session = Depends(deps.get_db)) -> Any:
+    """get all routes info"""
+    menus = db.query(models.Menu).options(joinedload(models.Menu.role_menu)).all()
+
+    def deal_menu(menu):
+        meta = {'title': menu.title,
+                "icon": menu.icon,
+                "noCache": menu.no_cache,
+                "affix": menu.affix,
+                "order": menu.order,
+                "roles": [role.role_id for role in menu.role_menu]
+                }
+        menu = menu.dict()
+        # menu["hidden"] = False
+        # menu["alwaysShow"] = True
+        menu['meta'] = meta
+        return menu
+
+    menus = list_to_tree([deal_menu(menu) for menu in menus])
+    return {"code": 20000, "data": menus}
 
 
 @router.get("/roles", response_model=schemas.Response)
-def read_roles(db: Session = Depends(deps.get_db),current_user: models.User = Depends(deps.get_current_active_user)) -> Any:
-    """
-    Retrieve Mock Data
-    """
-    #目前只支持二级菜单，递归想不到漂亮的写法
-    role_infos = {}
-    roles = db.query(models.Role).all()
+def read_roles(db: Session = Depends(deps.get_db)) -> Any:
+    """角色权限"""
+    role_infos = []
+
+    def deal_menu(menu):
+        meta = {'title': menu.title, }
+        menu = menu.dict()
+        menu['meta'] = meta
+        return menu
+
+    # 先取出所有数据再组成树结构
+    roles = db.query(models.Role).options(
+        joinedload(models.Role.role_menu).joinedload(models.Role_Menu.role)).all()
     for role in roles:
-        role_infos[role.key] = {"key": role.key, "name": role.name, "description": role.description,"routes":[]}
-    roles = db.query(models.Role,models.Menu
-                      ).join(models.Role_Menu, models.Role_Menu.role_id == models.Role.id
-                      ).join(models.Menu, models.Menu.id == models.Role_Menu.menu_id
-                      ).order_by(models.Role.id.asc(),models.Menu.parent_id.asc(),models.Menu.id.asc()).all()
-    for role in roles:
-        if role.Menu.parent_id is None:role_infos[role.Role.key]["routes"].append(role.Menu.dict())
-    for role,role_info in role_infos.items():
-        for i,parent_menu in enumerate(role_info["routes"]):
-            children = [m.Menu.dict() for m in roles if m.Menu.parent_id == parent_menu["id"] and m.Role.key == role]
-            if children != []:role_infos[role]["routes"][i]["children"] = children
-    role_lists = [i for i in role_infos.values()]
-    return {"code": 20000, "data":role_lists}
+        role_menus_list = list_to_tree([deal_menu(role_menu.menu) for role_menu in role.role_menu])
+        role_info = {
+            "id": role.id,
+            "name": role.name,
+            "description": role.description,
+            "routes": role_menus_list
+        }
+        role_infos.append(role_info)
+    return {"code": 20000, "data": role_infos}
 
 
 @router.put("/{id}", response_model=schemas.Response)
-def update_roles(
-    *,
-    db: Session = Depends(deps.get_db),
-    id: str,
-    role_in: schemas.RoleUpdate,
-    current_user: models.User = Depends(deps.get_current_active_user),
-) -> Any:
-    """
-    Retrieve Mock Data
-    """
-    urole = {"name":role_in.name,"description": role_in.description,}
-    role = db.query(models.Role).filter(models.Role.key == id)
+def update_role(*, db: Session = Depends(deps.get_db), id: str, role_in: schemas.RoleUpdate, ) -> Any:
+    """角色权限 confirm"""
+    urole = {"name": role_in.name, "description": role_in.description, }
+    role = db.query(models.Role).filter(models.Role.id == id)
     role.update(urole)
-    #更新权限菜单 Role_Menu
-    role = role.one()
-    routes = role_in.routes
-    db.query(models.Role_Menu).filter(models.Role_Menu.role_key == id).delete()
-    for route in routes:
-        role_menu = menus_to_list(route)
-        for index,menu in enumerate(role_menu):
-            role_menu = {"role_id":role.id,"role_key":role.key,"menu_id":menu['id']}
-            db.add(models.Role_Menu(**role_menu))
-    return {"code": 20000, "data":{"status":"success"}}
+    # 删除原有菜单
+    db.query(models.Role_Menu).filter(models.Role_Menu.role_id == id).delete()
+    # 新增现有菜单
+    menus_list = dfs_tree_to_list(role_in.routes)
+    menus_list = [models.Role_Menu(**{"role_id": role.one().id, "menu_id": menu_id}) for menu_id in menus_list]
+    db.bulk_save_objects(menus_list)
+    return {"code": 20000, "data": {"status": "success"}}
 
 
 @router.post("/", response_model=schemas.Response)
-def create_role(
-    *,
-    db: Session = Depends(deps.get_db),
-    role_in: schemas.RoleCreate,
-    current_user: models.User = Depends(deps.get_current_active_user),
-) -> Any:
+def create_role(*, db: Session = Depends(deps.get_db), role_create: schemas.RoleCreate, ) -> Any:
     """
-    Create new Role.
+    ADD new Role.
     """
-    role = {"key":role_in.key,"name":role_in.name,"description": role_in.description,}
+    # ROLE
+    role = {"name": role_create.name, "description": role_create.description, }
     role = models.Role(**role)
     db.add(role)
     db.flush()
-    #更新权限菜单 Role_Menu
-    routes = role_in.routes
-    db.query(models.Role_Menu).filter(models.Role_Menu.role_key == role.id).delete()
-    for route in routes:
-        role_menu = menus_to_list(route)
-        for index,menu in enumerate(role_menu):
-            role_menu = {"role_id":role.id,"role_key":role.key,"menu_id":menu['id']}
-            db.add(models.Role_Menu(**role_menu))
-    return {"code": 20000, "data": {"key":role_in.key}}
+    # ROLE_MENU
+    menus_list = dfs_tree_to_list(role_create.routes)
+    menus_list = [models.Role_Menu(**{"role_id": role.id, "menu_id": menu_id}) for menu_id in menus_list]
+    db.bulk_save_objects(menus_list)
+    return {"code": 20000, "data": {"id": role.id}}
+
 
 @router.delete("/{id}", response_model=schemas.Response)
-def delete_item(
-    *,
-    db: Session = Depends(deps.get_db),
-    id: str,
-    current_user: models.User = Depends(deps.get_current_active_user),
-) -> Any:
+def delete_role(*, db: Session = Depends(deps.get_db), id: str, ) -> Any:
     """
-    Delete an item.
+    Delete an Role.
     """
-    db.query(models.Role_Menu).filter(models.Role_Menu.role_key == id).delete()
-    db.query(models.Role).filter(models.Role.key == id).delete()
+    db.query(models.Role_Menu).filter(models.Role_Menu.role_id == id).delete()
+    db.query(models.Role).filter(models.Role.id == id).delete()
 
-    return {"code": 20000, "data":{"status":"success"}}
+    return {"code": 20000, "data": {"status": "success"}}
