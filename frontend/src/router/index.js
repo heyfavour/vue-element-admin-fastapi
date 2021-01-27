@@ -7,8 +7,6 @@ Vue.use(Router)
 import Layout from '@/layout'
 
 /* Router Modules */
-import systemRouterMap from './modules/system'
-import MonitorRouterMap from './modules/monitor'
 
 /**
  * 前端动态路由 component加载
@@ -19,9 +17,7 @@ export const asyncRoutesMap = {
   login: () => import('@/views/login/index'),
   auth_redirect: () => import('@/views/login/auth-redirect'),
   dashboard: () => import('@/views/dashboard/index'),
-  profile: () => import('@/views/profile/index'),
-  ...systemRouterMap,
-  ...MonitorRouterMap
+  profile: () => import('@/views/profile/index')
 }
 
 /**
