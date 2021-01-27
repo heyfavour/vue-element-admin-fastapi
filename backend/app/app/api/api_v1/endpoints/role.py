@@ -44,14 +44,15 @@ def read_roles(db: Session = Depends(deps.get_db)) -> Any:
         return menu
 
     # 先取出所有数据再组成树结构
-    roles = db.query(models.Role).options(
-        joinedload(models.Role.role_menu).joinedload(models.Role_Menu.role)).all()
+    roles = db.query(models.Role).options(joinedload(models.Role.role_menu).joinedload(models.Role_Menu.role)).order_by(
+        models.Role.order.asc()).all()
     for role in roles:
         role_menus_list = list_to_tree([deal_menu(role_menu.menu) for role_menu in role.role_menu])
         role_info = {
             "id": role.id,
             "name": role.name,
             "description": role.description,
+            "order": role.order,
             "routes": role_menus_list
         }
         role_infos.append(role_info)
@@ -61,7 +62,7 @@ def read_roles(db: Session = Depends(deps.get_db)) -> Any:
 @router.put("/{id}", response_model=schemas.Response)
 def update_role(*, db: Session = Depends(deps.get_db), id: str, role_in: schemas.RoleUpdate, ) -> Any:
     """角色权限 confirm"""
-    urole = {"name": role_in.name, "description": role_in.description, }
+    urole = {"name": role_in.name, "description": role_in.description, "order": role_in.order}
     role = db.query(models.Role).filter(models.Role.id == id)
     role.update(urole)
     # 删除原有菜单
@@ -79,7 +80,7 @@ def create_role(*, db: Session = Depends(deps.get_db), role_create: schemas.Role
     ADD new Role.
     """
     # ROLE
-    role = {"name": role_create.name, "description": role_create.description, }
+    role = {"name": role_create.name, "description": role_create.description, "order": role_create.order}
     role = models.Role(**role)
     db.add(role)
     db.flush()
