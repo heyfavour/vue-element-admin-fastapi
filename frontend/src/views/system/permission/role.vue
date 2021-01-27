@@ -3,20 +3,17 @@
     <el-button type="primary" @click="handleAddRole">新增角色</el-button>
 
     <el-table :data="rolesList" style="width: 100%;margin-top:30px;" border>
-      <el-table-column align="center" label="Role Key" width="220">
-        <template slot-scope="scope">
-          {{ scope.row.key }}
-        </template>
+      <el-table-column align="center" label="Role Id" width="220">
+        <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
       <el-table-column align="center" label="Role Name" width="220">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
+        <template slot-scope="scope">{{ scope.row.name }}</template>
       </el-table-column>
       <el-table-column align="header-center" label="Description">
-        <template slot-scope="scope">
-          {{ scope.row.description }}
-        </template>
+        <template slot-scope="scope">{{ scope.row.description }}</template>
+      </el-table-column>
+      <el-table-column align="center" label="Role Order" width="220">
+        <template slot-scope="scope">{{ scope.row.order }}</template>
       </el-table-column>
       <el-table-column align="center" label="Operations">
         <template slot-scope="scope">
@@ -28,8 +25,8 @@
 
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit Role':'New Role'">
       <el-form :model="role" label-width="80px" label-position="left">
-        <el-form-item label="Key">
-          <el-input v-model="role.key" placeholder="Role Key" :disabled="dialogType=='edit'" />
+        <el-form-item v-show="dialogType=='edit'" label="Id">
+          <el-input v-model="role.id" placeholder="Role Id" :disabled="dialogType=='edit'" />
         </el-form-item>
         <el-form-item label="Name">
           <el-input v-model="role.name" placeholder="Role Name" />
@@ -41,6 +38,9 @@
             type="textarea"
             placeholder="Role Description"
           />
+        </el-form-item>
+        <el-form-item label="Order">
+          <el-input v-model="role.order" placeholder="Role Order" />
         </el-form-item>
         <el-form-item label="Menus">
           <el-tree
@@ -68,9 +68,10 @@ import { deepClone } from '@/utils'
 import { getRoutes, getRoles, addRole, deleteRole, updateRole } from '@/api/role'
 
 const defaultRole = {
-  key: '',
+  id: '',
   name: '',
   description: '',
+  order: '',
   routes: []
 }
 
@@ -95,7 +96,6 @@ export default {
     }
   },
   created() {
-    // Mock: get all routes and roles list from server
     this.getRoutes()
     this.getRoles()
   },
@@ -109,6 +109,10 @@ export default {
       const res = await getRoles()
       this.rolesList = res.data
     },
+    search() {
+      this.getRoutes()
+      this.getRoles()
+    },
 
     // Reshape the routes structure so that it looks the same as the sidebar
     generateRoutes(routes, basePath = '/') {
@@ -116,7 +120,9 @@ export default {
 
       for (let route of routes) {
         // skip some route
-        if (route.hidden) { continue }
+        if (route.hidden) {
+          continue
+        }
 
         const onlyOneShowingChild = this.onlyOneShowingChild(route.children, route)
 
@@ -127,7 +133,6 @@ export default {
         const data = {
           path: path.resolve(basePath, route.path),
           title: route.meta && route.meta.title
-
         }
 
         // recursive child routes
@@ -162,13 +167,17 @@ export default {
     handleEdit(scope) {
       this.dialogType = 'edit'
       this.dialogVisible = true
-      this.checkStrictly = true
       this.role = deepClone(scope.row)
       this.$nextTick(() => {
-        const routes = this.generateRoutes(this.role.routes)
-        this.$refs.tree.setCheckedNodes(this.generateArr(routes))
-        // set checked state of a node not affects its father and child nodes
-        this.checkStrictly = false
+        const routes = this.generateArr(this.generateRoutes(this.role.routes))
+        // 如果使用此写法来设置勾选，父节点无法正常回显半选
+        this.$refs.tree.setCheckedNodes([])
+        routes.forEach(route => {
+          const node = this.$refs.tree.getNode(route.path)
+          if (node.isLeaf) {
+            this.$refs.tree.setChecked(node, true)
+          }
+        })
       })
     },
     handleDelete({ $index, row }) {
@@ -178,14 +187,16 @@ export default {
         type: 'warning'
       })
         .then(async() => {
-          await deleteRole(row.key)
+          await deleteRole(row.id)
           this.rolesList.splice($index, 1)
           this.$message({
             type: 'success',
             message: 'Delete succed!'
           })
         })
-        .catch(err => { console.error(err) })
+        .catch(err => {
+          console.error(err)
+        })
     },
     generateTree(routes, basePath = '/', checkedKeys) {
       const res = []
@@ -210,31 +221,33 @@ export default {
       this.role.routes = this.generateTree(deepClone(this.serviceRoutes), '/', checkedKeys)
 
       if (isEdit) {
-        await updateRole(this.role.key, this.role)
-        for (let index = 0; index < this.rolesList.length; index++) {
-          if (this.rolesList[index].key === this.role.key) {
-            this.rolesList.splice(index, 1, Object.assign({}, this.role))
-            break
-          }
-        }
+        await updateRole(this.role.id, this.role)
+        // for (let index = 0; index < this.rolesList.length; index++) {
+        //   if (this.rolesList[index].id === this.role.id) {
+        //     this.rolesList.splice(index, 1, Object.assign({}, this.role))
+        //     break
+        //   }
+        // }
       } else {
-        const { data } = await addRole(this.role)
-        this.role.key = data.key
-        this.rolesList.push(this.role)
+        await addRole(this.role)
+        // const { data } = await addRole(this.role)
+        // this.role.id = data.id
+        // this.rolesList.push(this.role)
       }
 
-      const { description, key, name } = this.role
+      const { description, id, name } = this.role
       this.dialogVisible = false
       this.$notify({
         title: 'Success',
         dangerouslyUseHTMLString: true,
         message: `
-            <div>Role Key: ${key}</div>
+            <div>Role Id: ${id}</div>
             <div>Role Name: ${name}</div>
             <div>Description: ${description}</div>
           `,
         type: 'success'
       })
+      this.search()
     },
     // reference: src/view/layout/components/Sidebar/SidebarItem.vue
     onlyOneShowingChild(children = [], parent) {
@@ -250,7 +263,7 @@ export default {
 
       // Show parent if there are no child route to display
       if (showingChildren.length === 0) {
-        onlyOneChild = { ... parent, path: '', noShowingChildren: true }
+        onlyOneChild = { ...parent, path: '', noShowingChildren: true }
         return onlyOneChild
       }
 
@@ -261,12 +274,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.app-container {
-  .roles-table {
-    margin-top: 30px;
+  .app-container {
+    .roles-table {
+      margin-top: 30px;
+    }
+
+    .permission-tree {
+      margin-bottom: 30px;
+    }
   }
-  .permission-tree {
-    margin-bottom: 30px;
-  }
-}
 </style>
