@@ -28,7 +28,7 @@ def routes(db: Session = Depends(deps.get_db)) -> Any:
         menu['meta'] = meta
         return menu
 
-    menus = list_to_tree([deal_menu(menu) for menu in menus])
+    menus = list_to_tree([deal_menu(menu) for menu in menus], order="order")
     return {"code": 20000, "data": menus}
 
 
@@ -47,7 +47,7 @@ def read_roles(db: Session = Depends(deps.get_db)) -> Any:
     roles = db.query(models.Role).options(joinedload(models.Role.role_menu).joinedload(models.Role_Menu.role)).order_by(
         models.Role.order.asc()).all()
     for role in roles:
-        role_menus_list = list_to_tree([deal_menu(role_menu.menu) for role_menu in role.role_menu])
+        role_menus_list = list_to_tree([deal_menu(role_menu.menu) for role_menu in role.role_menu], order="order")
         role_info = {
             "id": role.id,
             "name": role.name,
