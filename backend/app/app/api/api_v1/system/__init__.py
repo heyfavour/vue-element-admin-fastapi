@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-from app import crud, models, schemas
 from app.api.api_v1.system import menu,dict,department,user
 
 router = APIRouter()
