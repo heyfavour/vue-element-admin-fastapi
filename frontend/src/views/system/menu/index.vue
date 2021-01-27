@@ -1,28 +1,34 @@
 <template>
   <div class="app-container">
     <el-form :inline="true">
-      <el-form-item label="菜单名称">
-        <el-input
-          v-model="queryParams.title"
-          placeholder="请输入菜单名称"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+      <!--      <el-form-item label="菜单名称">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.title"-->
+      <!--          placeholder="请输入菜单名称"-->
+      <!--          clearable-->
+      <!--          size="small"-->
+      <!--          @keyup.enter.native="handleQuery"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">查询</el-button>
         <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
       </el-form-item>
     </el-form>
 
-    <el-table v-loading="loading" :data="menuList" row-key="id" :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+    <el-table
+      v-loading="loading"
+      :data="menuList"
+      row-key="id"
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+    >
       <el-table-column prop="title" label="菜单名称" :show-overflow-tooltip="true" width="160" />
       <el-table-column prop="icon" label="图标" align="center" width="100">
-        <template slot-scope="scope"><svg-icon :icon-class="scope.row.icon" /></template>
+        <template slot-scope="scope">
+          <svg-icon :icon-class="scope.row.icon" />
+        </template>
       </el-table-column>
       <el-table-column prop="order" label="排序" width="60" />
-      <!--      <el-table-column prop="perms" label="权限标识" :show-overflow-tooltip="true" />-->
       <el-table-column prop="component" label="组件路径" :show-overflow-tooltip="true" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -39,24 +45,27 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="上级菜单">
-              <treeselect v-model="form.parent_id" :options="menuOptions" :normalizer="normalizer" :show-count="true" placeholder="选择上级菜单" />
+              <treeselect
+                v-model="form.parent_id"
+                :options="menuOptions"
+                :normalizer="normalizer"
+                :show-count="true"
+                placeholder="选择上级菜单"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="菜单类型" prop="menu_type">
-              <el-radio-group v-model="form.menu_type">
-                <el-radio label="M">目录</el-radio>
-                <el-radio label="C">菜单</el-radio>
-                <!--                <el-radio label="F">按钮</el-radio>-->
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item v-if="form.menu_type !== 'F'" label="菜单图标">
+            <el-form-item label="菜单图标">
               <el-popover placement="bottom-start" width="460" trigger="click" @show="$refs['iconSelect'].reset()">
                 <IconSelect ref="iconSelect" @selected="selected" />
                 <el-input slot="reference" v-model="form.icon" placeholder="点击选择图标" readonly>
-                  <svg-icon v-if="form.icon" slot="prefix" :icon-class="form.icon" class="el-input__icon" style="height: 32px;width: 16px;" />
+                  <svg-icon
+                    v-if="form.icon"
+                    slot="prefix"
+                    :icon-class="form.icon"
+                    class="el-input__icon"
+                    style="height: 32px;width: 16px;"
+                  />
                   <i v-else slot="prefix" class="el-icon-search el-input__icon" />
                 </el-input>
               </el-popover>
@@ -72,32 +81,24 @@
               <el-input-number v-model="form.order" controls-position="right" :min="0" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item v-if="form.menu_type !== 'F'" label="路由地址" prop="path">
-              <el-input v-model="form.path" placeholder="请输入路由地址" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item v-if="form.menu_type !== 'F'" label="组件名称" prop="name">
-              <el-input v-model="form.name" placeholder="请输入组件名称" />
-            </el-form-item>
-          </el-col>
-          <el-col v-if="form.menu_type == 'C'" :span="24">
+          <el-col :span="24">
             <el-form-item label="组件路径" prop="component">
               <el-input v-model="form.component" placeholder="请输入组件路径" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.menu_type !== 'F'" label="显示状态">
-              <el-radio-group v-model="form.hidden">
-                <el-radio :label="false">显示</el-radio>
-                <el-radio :label="true">隐藏</el-radio>
-              </el-radio-group>
+            <el-form-item label="路由地址" prop="path">
+              <el-input v-model="form.path" placeholder="请输入路由地址" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.menu_type !== 'F'" label="是否缓存">
-              <el-radio-group v-model="form.noCache">
+            <el-form-item label="组件名称" prop="name">
+              <el-input v-model="form.name" placeholder="请输入组件名称" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="是否缓存">
+              <el-radio-group v-model="form.no_cache">
                 <el-radio :label="false">缓存</el-radio>
                 <el-radio :label="true">不缓存</el-radio>
               </el-radio-group>
@@ -185,10 +186,9 @@ export default {
     getTreeselect() {
       listMenu().then(response => {
         this.menuOptions = []
-        const menu = { id: 0, title: '主目录', children: [] }
+        const menu = { id: undefined, title: '', children: [] }
         menu.children = response.data
         this.menuOptions.push(menu)
-        console.log(this.menuOptions)
       })
     },
     // 取消按钮
@@ -200,14 +200,17 @@ export default {
     reset() {
       this.form = {
         id: undefined,
-        parent_id: 0,
+        path: undefined,
+        component: undefined,
+        name: undefined,
         title: undefined,
+        affix: undefined,
         icon: undefined,
-        menu_type: 'M',
+        no_cache: undefined,
         order: undefined,
         external_link: false,
-        hidden: false,
-        noCache: false
+        parent_id: undefined
+
       }
       this.resetForm('form')
     },
@@ -231,8 +234,6 @@ export default {
       this.getTreeselect()
       getMenu(row.id).then(response => {
         this.form = response.data
-        console.log(this.form)
-        console.log(this.form.parent_id)
         this.open = true
         this.title = '修改菜单'
       })
@@ -276,7 +277,8 @@ export default {
       }).then((response) => {
         this.getList()
         this.msgSuccess(response.message)
-      }).catch(function() {})
+      }).catch(function() {
+      })
     }
   }
 }
