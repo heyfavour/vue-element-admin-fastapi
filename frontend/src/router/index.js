@@ -6,20 +6,6 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 
-/* Router Modules */
-
-/**
- * 前端动态路由 component加载
- */
-export const asyncRoutesMap = {
-  Layout,
-  redirect: () => import('@/views/redirect/index'),
-  login: () => import('@/views/login/index'),
-  auth_redirect: () => import('@/views/login/auth-redirect'),
-  dashboard: () => import('@/views/dashboard/index'),
-  profile: () => import('@/views/profile/index')
-}
-
 /**
  * constantRoutes
  * a base page that does not have permission requirements
@@ -33,28 +19,28 @@ export const constantRoutes = [
     children: [
       {
         path: '/redirect/:path(.*)',
-        component: asyncRoutesMap['redirect']
+        component: () => import('@/views/redirect/index')
       }
     ]
   },
   {
     path: '/login',
-    component: asyncRoutesMap['login'],
+    component: () => import('@/views/login/index'),
     hidden: true
   },
   {
     path: '/auth-redirect',
-    component: asyncRoutesMap['auth_redirect'],
+    component: () => import('@/views/login/auth-redirect'),
     hidden: true
   },
   {
     path: '/404',
-    component: asyncRoutesMap['error_404'],
+    component: () => import('@/views/error-page/404'),
     hidden: true
   },
   {
     path: '/401',
-    component: asyncRoutesMap['error_401'],
+    component: () => import('@/views/error-page/401'),
     hidden: true
   },
   {
@@ -64,9 +50,9 @@ export const constantRoutes = [
     children: [
       {
         path: 'dashboard',
-        component: asyncRoutesMap['dashboard'],
+        component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: '首页', icon: 'dashboard', affix: true }
+        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
       }
     ]
   },
@@ -78,9 +64,22 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        component: asyncRoutesMap['profile'],
+        component: () => import('@/views/profile/index'),
         name: 'Profile',
         meta: { title: 'Profile', icon: 'user', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/dict/data/',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/dict/data/:id?',
+        component: () => import('@/views/system/dict/data'),
+        name: 'DictData',
+        meta: { title: '字典数据明细', icon: 'dict', noCache: false }
       }
     ]
   }
