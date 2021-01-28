@@ -9,13 +9,6 @@ export function listType(query) {
   })
 }
 
-export function type_all(query) {
-  return request({
-    url: '/system/dict/type/all',
-    method: 'get'
-  })
-}
-
 // 查询字典类型详细
 export function getType(id) {
   return request({
@@ -47,30 +40,5 @@ export function delType(dictId) {
   return request({
     url: '/system/dict/type/' + dictId,
     method: 'delete'
-  })
-}
-
-// 清理参数缓存
-export function clearCache() {
-  return request({
-    url: '/system/dict/type/clearCache',
-    method: 'delete'
-  })
-}
-
-// 导出字典类型
-export function exportType(query) {
-  return request({
-    url: '/system/dict/type/export',
-    method: 'get',
-    params: query
-  })
-}
-
-// 获取字典选择框列表
-export function optionselect() {
-  return request({
-    url: '/system/dict/type/optionselect',
-    method: 'get'
   })
 }
