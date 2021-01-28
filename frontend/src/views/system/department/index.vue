@@ -1,27 +1,34 @@
 <template>
   <div class="app-container">
     <el-form :inline="true">
-      <el-form-item label="部门名称">
-        <el-input
-          v-model="queryParams.deptName"
-          placeholder="请输入部门名称"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="状态">
-        <el-select v-model="queryParams.status" placeholder="部门状态" clearable size="small">
-          <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />
-        </el-select>
-      </el-form-item>
+      <!--      <el-form-item label="部门名称">-->
+      <!--        <el-input-->
+      <!--          v-model="queryParams.deptName"-->
+      <!--          placeholder="请输入部门名称"-->
+      <!--          clearable-->
+      <!--          size="small"-->
+      <!--          @keyup.enter.native="handleQuery"-->
+      <!--        />-->
+      <!--      </el-form-item>-->
+      <!--      <el-form-item label="状态">-->
+      <!--        <el-select v-model="queryParams.status" placeholder="部门状态" clearable size="small">-->
+      <!--          <el-option v-for="dict in statusOptions" :key="dict.dictValue" :label="dict.dictLabel" :value="dict.dictValue" />-->
+      <!--        </el-select>-->
+      <!--      </el-form-item>-->
       <el-form-item>
-        <el-button class="filter-item" type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button class="filter-item" type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索
+        </el-button>
         <el-button class="filter-item" type="primary" icon="el-icon-plus" size="mini" @click="handleAdd">新增</el-button>
       </el-form-item>
     </el-form>
 
-    <el-table v-loading="loading" :data="deptList" row-key="id" default-expand-all :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+    <el-table
+      v-loading="loading"
+      :data="deptList"
+      row-key="id"
+      default-expand-all
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+    >
       <el-table-column prop="name" label="部门名称" width="260" />
       <el-table-column prop="code" label="部门代码" width="260" />
       <el-table-column prop="order" label="排序" width="200" />
@@ -29,7 +36,14 @@
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)">修改</el-button>
           <el-button size="mini" type="text" icon="el-icon-plus" @click="handleAdd(scope.row)">新增</el-button>
-          <el-button v-if="scope.row.parent_id !== 0" size="mini" type="text" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button
+            v-if="scope.row.parent_id !== -1"
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+          >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -40,7 +54,12 @@
         <el-row>
           <el-col v-if="form.parent_id !== null" :span="24">
             <el-form-item label="上级部门" prop="parent_id">
-              <treeselect v-model="form.parent_id" :options="deptOptions" :normalizer="normalizer" placeholder="选择上级部门" />
+              <treeselect
+                v-model="form.parent_id"
+                :options="deptOptions"
+                :normalizer="normalizer"
+                placeholder="选择上级部门"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -171,7 +190,7 @@ export default {
       this.open = true
       this.title = '添加部门'
       listDept().then(response => {
-        this.deptOptions = this.handleTree(response.data, 'id')
+        this.deptOptions = response.data
       })
     },
     /** 修改按钮操作 */
@@ -212,16 +231,17 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      this.$confirm('是否确认删除名称为"' + row.deptName + '"的数据项?', '警告', {
+      this.$confirm('是否确认删除名称为"' + row.name + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return delDept(row.deptId)
+        return delDept(row.id)
       }).then(() => {
         this.getList()
         this.msgSuccess('删除成功')
-      }).catch(function() {})
+      }).catch(function() {
+      })
     }
   }
 }
