@@ -35,7 +35,7 @@ def update_menu(*, db: Session = Depends(deps.get_db), menu_in: schemas.MenuUpda
 
 
 @router.delete("/{menu_id}", response_model=schemas.Response)
-def read_menu_id(menu_id: int, db: Session = Depends(deps.get_db), ) -> Any:
+def delete_menu_id(menu_id: int, db: Session = Depends(deps.get_db), ) -> Any:
     """Delete a specific menu by id."""
     db.query(models.Role_Menu).filter(models.Role_Menu.menu_id == menu_id).delete()
     db.query(models.Menu).filter(models.Menu.id == menu_id).delete()
