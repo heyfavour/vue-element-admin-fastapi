@@ -1,24 +1,20 @@
 from typing import Optional
-
-from pydantic import BaseModel
-
-from typing import Optional
-
 from pydantic import BaseModel
 
 
 # Shared properties
 class MenuBase(BaseModel):
-    path : str
-    hidden :bool
-    menu_type : str
+    path: str = ""
+    component: Optional[str] = None
+    affix: Optional[bool] = False
+    external_link: Optional[bool] = False
+    parent_id: Optional[int] = None
 
-
-    title : str
-    icon : str
-    no_cache :bool
-    order :int
-
+    name: Optional[str] = None
+    title: str = ""
+    icon: str = ""
+    no_cache: bool = False
+    order: int = 0
 
 
 # Properties to receive on item creation
@@ -29,13 +25,3 @@ class MenuCreate(MenuBase):
 # Properties to receive on item update
 class MenuUpdate(MenuBase):
     id: int
-    always_show :bool
-    redirect : Optional[str] = None
-    affix :Optional[bool] = False
-    parent_id:Optional[int] = None
-    external_link :Optional[bool] = False
-    component : Optional[str] = None
-    #meta
-    name : Optional[str] = None
-
-
