@@ -24,7 +24,7 @@ def routes(db: Session = Depends(deps.get_db)) -> Any:
                 }
         menu = menu.dict()
         # menu["hidden"] = False
-        # menu["alwaysShow"] = True
+        menu["alwaysShow"] = True if not menu['parent_id'] else False
         menu['meta'] = meta
         return menu
 
