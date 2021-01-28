@@ -21,22 +21,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select
-          v-model="listQuery.status"
-          placeholder="字典状态"
-          clearable
-          size="small"
-          style="width: 240px"
-        >
-          <el-option
-            v-for="dict in statusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -50,7 +34,8 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-        >新增</el-button>
+        >新增
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -59,7 +44,8 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-        >修改</el-button>
+        >修改
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -68,33 +54,17 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-        >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-        >导出</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          icon="el-icon-refresh"
-          size="mini"
-          @click="handleClearCache"
-        >清理缓存</el-button>
+        >删除
+        </el-button>
       </el-col>
     </el-row>
 
     <el-table v-loading="loading" :data="list" @selection-change="handleSelectionChange">i
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="字典编号" align="center" prop="id" />
-      <!--      <el-table-column label="字典编码" align="center" prop="code" :show-overflow-tooltip="true" />-->
       <el-table-column label="字典类型" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          <router-link :to="'/dict/type/data/' + scope.row.id" class="link-type">
+          <router-link :to="'/dict/data/' + scope.row.id" class="link-type">
             <span>{{ scope.row.code }}</span>
           </router-link>
         </template>
@@ -107,18 +77,26 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-          >修改</el-button>
+          >修改
+          </el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-          >删除</el-button>
+          >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="getList"
+    />
 
     <!-- 添加或修改参数配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
@@ -142,10 +120,10 @@
 </template>
 
 <script>
-import { listType, getType, delType, addType, updateType, exportType, clearCache } from '@/api/system/dict/type'
+import { listType, getType, delType, addType, updateType } from '@/api/system/dict/type'
 
 export default {
-  name: 'Dict',
+  name: 'DictType',
   data() {
     return {
       // 遮罩层
@@ -164,15 +142,12 @@ export default {
       title: '',
       // 是否显示弹出层
       open: false,
-      // 状态数据字典
-      statusOptions: [],
       // 查询参数
       listQuery: {
         page: 1,
         limit: 10,
         name: undefined,
         type: undefined
-        // status: undefined
       },
       // 表单参数
       form: {},
@@ -189,9 +164,6 @@ export default {
   },
   created() {
     this.getList()
-    // this.getDicts('sys_normal_disable').then(response => {
-    //   this.statusOptions = response.data
-    // })
   },
   methods: {
     /** 查询字典类型列表 */
@@ -204,10 +176,6 @@ export default {
       }
       )
     },
-    // 字典状态字典翻译
-    statusFormat(row, column) {
-      return this.selectDictLabel(this.statusOptions, row.status)
-    },
     // 取消按钮
     cancel() {
       this.open = false
@@ -219,7 +187,6 @@ export default {
         id: undefined,
         name: undefined,
         code: undefined,
-        // status: '0',
         description: undefined
       }
       this.resetForm('form')
@@ -231,8 +198,12 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.dateRange = []
-      this.resetForm('queryForm')
+      this.listQuery = {
+        page: 1,
+        limit: 10,
+        name: undefined,
+        type: undefined
+      }
       this.handleQuery()
     },
     /** 新增按钮操作 */
@@ -295,27 +266,7 @@ export default {
       }).then(() => {
         this.getList()
         this.msgSuccess('删除成功')
-      }).catch(function() {})
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      const listQuery = this.listQuery
-      this.$confirm('是否确认导出所有类型数据项?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function() {
-        return exportType(listQuery)
-      }).then(response => {
-        this.download(response.msg)
-      }).catch(function() {})
-    },
-    /** 清理缓存按钮操作 */
-    handleClearCache() {
-      clearCache().then(response => {
-        if (response.code === 200) {
-          this.msgSuccess('清理成功')
-        }
+      }).catch(function() {
       })
     }
   }

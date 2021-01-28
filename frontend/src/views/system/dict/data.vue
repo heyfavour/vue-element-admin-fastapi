@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form ref="queryForm" :model="queryParams" :inline="true">
       <el-form-item label="字典名称" prop="dictType">
-        <el-select v-model="queryParams.type_id" size="small">
+        <el-select v-model="queryParams.type_id" size="small" disabled>
           <el-option
             v-for="item in typeOptions"
             :key="item.id"
@@ -33,7 +33,8 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-        >新增</el-button>
+        >新增
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -42,7 +43,8 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-        >修改</el-button>
+        >修改
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -51,15 +53,8 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-        >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-        >导出</el-button>
+        >删除
+        </el-button>
       </el-col>
     </el-row>
 
@@ -106,11 +101,11 @@
 </template>
 
 <script>
-import { listData, getData, delData, addData, updateData, exportData } from '@/api/system/dict/data'
-import { type_all, getType } from '@/api/system/dict/type'
+import { type_all, listData, getData, delData, addData, updateData } from '@/api/system/dict/data'
+import { getType } from '@/api/system/dict/type'
 
 export default {
-  name: 'Data',
+  name: 'DictData',
   data() {
     return {
       // 遮罩层
@@ -177,7 +172,7 @@ export default {
     getList() {
       this.loading = true
       listData(this.queryParams).then(response => {
-        this.dataList = response.data.items
+        this.dataList = response.data.dict_data
         this.total = response.data.total
         this.loading = false
       })
@@ -204,8 +199,12 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm('queryForm')
-      this.queryParams.type_id = this.defaultDictTypeId
+      this.queryParams = {
+        page: 1,
+        limit: 10,
+        type_id: this.defaultDictTypeId,
+        label: undefined
+      }
       this.handleQuery()
     },
     /** 新增按钮操作 */
@@ -267,20 +266,8 @@ export default {
       }).then(() => {
         this.getList()
         this.msgSuccess('删除成功')
-      }).catch(function() {})
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      const queryParams = this.queryParams
-      this.$confirm('是否确认导出所有数据项?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function() {
-        return exportData(queryParams)
-      }).then(response => {
-        this.download(response.msg)
-      }).catch(function() {})
+      }).catch(function() {
+      })
     }
   }
 }
