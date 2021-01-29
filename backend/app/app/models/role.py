@@ -16,5 +16,5 @@ class Role(Base):
 class Role_Menu(Base):
     """权限组-菜单-中间表"""
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    role_id = Column(Integer, ForeignKey("role.id"))
-    menu_id = Column(Integer, ForeignKey("menu.id"))
+    role_id = Column(Integer, ForeignKey("role.id", ondelete='CASCADE'))
+    menu_id = Column(Integer, ForeignKey("menu.id", ondelete='CASCADE'))
