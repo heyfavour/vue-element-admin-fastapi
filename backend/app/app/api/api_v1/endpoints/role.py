@@ -76,9 +76,7 @@ def update_role(*, db: Session = Depends(deps.get_db), id: str, role_in: schemas
 
 @router.post("/", response_model=schemas.Response)
 def create_role(*, db: Session = Depends(deps.get_db), role_create: schemas.RoleCreate, ) -> Any:
-    """
-    ADD new Role.
-    """
+    """ADD new Role."""
     # ROLE
     role = {"name": role_create.name, "description": role_create.description, "order": role_create.order}
     role = models.Role(**role)
@@ -93,8 +91,6 @@ def create_role(*, db: Session = Depends(deps.get_db), role_create: schemas.Role
 
 @router.delete("/{id}", response_model=schemas.Response)
 def delete_role(*, db: Session = Depends(deps.get_db), id: str, ) -> Any:
-    """
-    Delete an Role.
-    """
+    """Delete an Role."""
     db.query(models.Role).filter(models.Role.id == id).delete()
     return {"code": 20000, "data": {"status": "success"}}
