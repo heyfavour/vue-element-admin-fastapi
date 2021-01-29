@@ -36,3 +36,9 @@ class UserUpdate(UserBase):
     deptId: Optional[int] = None
     postIds: List[int] = []
     roleIds: List[int] = []
+
+
+# reset password
+class UserPWReset(BaseModel):
+    user_id: int
+    password: str
