@@ -96,7 +96,5 @@ def delete_role(*, db: Session = Depends(deps.get_db), id: str, ) -> Any:
     """
     Delete an Role.
     """
-    db.query(models.Role_Menu).filter(models.Role_Menu.role_id == id).delete()
     db.query(models.Role).filter(models.Role.id == id).delete()
-
     return {"code": 20000, "data": {"status": "success"}}
