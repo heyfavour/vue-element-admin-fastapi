@@ -99,6 +99,14 @@ export function sprintf(str) {
   return flag ? str : ''
 }
 
+// 转换字符串，undefined,null等转化为""
+export function praseStrEmpty(str) {
+  if (!str || str === 'undefined' || str === 'null') {
+    return ''
+  }
+  return str
+}
+
 /**
  * 构造树型结构数据
  * @param {*} data 数据源
