@@ -44,7 +44,7 @@ def read_roles(db: Session = Depends(deps.get_db)) -> Any:
         return menu
 
     # 先取出所有数据再组成树结构
-    roles = db.query(models.Role).options(joinedload(models.Role.role_menu).joinedload(models.Role_Menu.role)).order_by(
+    roles = db.query(models.Role).options(joinedload(models.Role.role_menu).joinedload(models.Role_Menu.menu)).order_by(
         models.Role.order.asc()).all()
     for role in roles:
         role_menus_list = list_to_tree([deal_menu(role_menu.menu) for role_menu in role.role_menu], order="order")
