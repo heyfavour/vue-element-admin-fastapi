@@ -2,7 +2,6 @@ from typing import Any, Optional
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from fastapi.encoders import jsonable_encoder
 from app import models, schemas
 from app.api import deps
 
@@ -55,7 +54,7 @@ def delete_type_id(type_id: str, db: Session = Depends(deps.get_db), ) -> Any:
 @router.post("/type", response_model=schemas.Response)
 def add_type(*, db: Session = Depends(deps.get_db), type: schemas.DictTypeCreate, ) -> Any:
     """字典管理 新增"""
-    db.add(models.Dict_Type(**jsonable_encoder(type)))
+    db.add(models.Dict_Type(**type.dict()))
     return {"code": 20000, "message": "新增成功", }
 
 
@@ -88,7 +87,7 @@ def add_dict_data(*, db: Session = Depends(deps.get_db), data: schemas.DictDataU
 @router.post("/data", response_model=schemas.Response)
 def add_data(*, db: Session = Depends(deps.get_db), data: schemas.DictDataCreate, ) -> Any:
     """字典数据明细-新增"""
-    db.add(models.Dict_Data(**jsonable_encoder(data)))
+    db.add(models.Dict_Data(**data.dict()))
     return {"code": 20000, "message": "新增成功", }
 
 

@@ -2,7 +2,6 @@ from typing import Any, Optional
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from fastapi.encoders import jsonable_encoder
 from app import models, schemas
 from app.api import deps
 from app.extensions.utils import list_to_tree
@@ -45,5 +44,5 @@ def delete_menu_id(menu_id: int, db: Session = Depends(deps.get_db), ) -> Any:
 @router.post("/", response_model=schemas.Response)
 def post_menu(*, db: Session = Depends(deps.get_db), menu: schemas.MenuCreate, ) -> Any:
     """Add a specific menu"""
-    db.add(models.Menu(**jsonable_encoder(menu)))
+    db.add(models.Menu(**menu.dict()))
     return {"code": 20000, "data": "", "message": "新增菜单成功"}

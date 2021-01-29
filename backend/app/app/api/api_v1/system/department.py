@@ -1,7 +1,6 @@
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from app import models, schemas
 from app.api import deps
@@ -21,7 +20,7 @@ def get_departments(db: Session = Depends(deps.get_db), ) -> Any:
 @router.post("/", response_model=schemas.Response)
 def add_department(*, db: Session = Depends(deps.get_db), department: schemas.DepartmentCreate) -> Any:
     """部门管理-新增"""
-    db.add(models.Department(**jsonable_encoder(department)))
+    db.add(models.Department(**department.dict()))
     return {"code": 20000, "data": "", "message": "新增部门成功"}
 
 
