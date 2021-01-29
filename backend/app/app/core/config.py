@@ -7,6 +7,7 @@ from pydantic import AnyHttpUrl, BaseSettings, EmailStr, HttpUrl, PostgresDsn, v
 class Settings():
     API_V1_STR: str = ""
     SECRET_KEY: str = secrets.token_urlsafe(32)
+    INIT_PASSWORD: str = "qwe123"
     # 60 minutes * 24 hours * 8 days = 8 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     # SERVER_NAME: str
@@ -68,6 +69,7 @@ class Settings():
     # EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 48
     EMAIL_TEMPLATES_DIR: str = "app/email-templates/build"
     EMAILS_ENABLED: bool = True
+
     #
     @validator("EMAILS_ENABLED", pre=True)
     def get_emails_enabled(cls, v: bool, values: Dict[str, Any]) -> bool:
@@ -75,7 +77,7 @@ class Settings():
 
     FIRST_SUPERUSER: str = "admin"
     FIRST_SUPERUSER_EMAIL: str = "619511821@qq.com"
-    FIRST_SUPERUSER_PASSWORD: str =  "qwe123"
+    FIRST_SUPERUSER_PASSWORD: str = "qwe123"
     USERS_OPEN_REGISTRATION: bool = False
 
     class Config:
