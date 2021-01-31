@@ -490,7 +490,6 @@ export default {
         this.form.roleIds = response.data.user.roleIds
         this.open = true
         this.title = '修改用户'
-        console.log(this.form)
       })
     },
     /** 重置密码按钮操作 */
