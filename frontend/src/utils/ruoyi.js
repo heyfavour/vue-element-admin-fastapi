@@ -1,5 +1,3 @@
-// import request from '@/utils/request'
-
 /**
  * 通用js方法封装处理
  * Copyright (c) 2019 ruoyi
@@ -84,7 +82,6 @@ export function selectDictLabel(datas, value) {
 // 通用下载方法
 export function download(fileName, query = null) {
   var download_url = baseURL + '/report/excel_generate/' + fileName
-  console.log(query)
   if (query !== null && query !== undefined) {
     download_url = download_url + '?template=0'
     for (var key in query) {
