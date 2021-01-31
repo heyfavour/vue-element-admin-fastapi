@@ -1,27 +1,24 @@
-from typing import Any, Optional
+from typing import Any
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Request, Depends
 from sqlalchemy.orm import Session
+from fastapi.responses import StreamingResponse
+
 from app.api import deps
 from app.api.api_v1.report.gen_report import Report
 
-from fastapi.responses import FileResponse,StreamingResponse
 router = APIRouter()
 
 
-
-@router.get("/report/template/{excel_name}",tags=["report"])
-def read_routes(db: Session = Depends(deps.get_db),
-                excel_name: Optional[str] = None,
-                # current_user: models.User = Depends(deps.get_current_active_user)
-                ) -> Any:
+@router.get("/report/excel_generate/{excel_name}", tags=["report"], exclude_dependencies=True)
+def excel_generate(*, excel_name: str = "", request: Request, db: Session = Depends(deps.get_db)) -> Any:
     """
-    Retrieve Mock Data.
+    通过动态import的形式，统一处理excel:模板下载/数据导出
     """
-    report =  Report(code=excel_name,).module
-    bio =  report.get_template()
+    report = Report(code=excel_name, query_params=request.query_params).module
+    if request.query_params.get("template", "1") == "1":
+        bio = report.get_template()  # 模板
+    else:
+        bio = report.get_instance(db)  # 实例
     file_name = report.file_name.encode('utf-8').decode('latin1')
-    return StreamingResponse(bio,headers={'Content-Disposition':f'attachment; filename={file_name}.xlsx'})
-
-
-
+    return StreamingResponse(bio, headers={'Content-Disposition': f'attachment; filename={file_name}.xlsx'})

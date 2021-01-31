@@ -247,7 +247,6 @@ import {
   delUser,
   addUser,
   updateUser,
-  exportUser,
   resetUserPwd,
   changeUserStatus
 } from '@/api/system/user'
@@ -558,10 +557,8 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(function() {
-        return exportUser(queryParams)
       }).then(response => {
-        this.download(response.msg)
+        this.download('system_user', queryParams)
       }).catch(function() {
       })
     },
@@ -572,7 +569,7 @@ export default {
     },
     /** 下载模板操作 */
     importTemplate() {
-      this.download('/template/system_user')
+      this.download('system_user')
     },
     // 文件上传中处理
     handleFileUploadProgress(event, file, fileList) {

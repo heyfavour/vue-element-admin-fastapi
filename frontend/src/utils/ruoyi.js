@@ -1,3 +1,5 @@
+// import request from '@/utils/request'
+
 /**
  * 通用js方法封装处理
  * Copyright (c) 2019 ruoyi
@@ -80,14 +82,25 @@ export function selectDictLabel(datas, value) {
 }
 
 // 通用下载方法
-export function download(fileName) {
-  // window.location.href = baseURL + '/common/download?fileName=' + encodeURI(fileName) + '&delete=' + true
-  window.location.href = baseURL + '/report' + fileName
+export function download(fileName, query = null) {
+  var download_url = baseURL + '/report/excel_generate/' + fileName
+  console.log(query)
+  if (query !== null && query !== undefined) {
+    download_url = download_url + '?template=0'
+    for (var key in query) {
+      if (query[key] !== undefined && query[key] !== '' && query[key] !== null) {
+        download_url = download_url + '&' + key + '=' + query[key]
+      }
+    }
+  }
+  window.location.href = download_url
 }
 
 // 字符串格式化(%s )
 export function sprintf(str) {
-  var args = arguments; var flag = true; var i = 1
+  var args = arguments
+  var flag = true
+  var i = 1
   str = str.replace(/%s/g, function() {
     var arg = args[i++]
     if (typeof arg === 'undefined') {
