@@ -25,6 +25,7 @@ class User(Base):
 
     user_role = relationship("User_Role", backref="user")
     user_department = relationship("User_Department", backref="user")
+    user_dict = relationship("User_Dict", backref="user")
 
 
 class User_Role(Base):
@@ -49,4 +50,7 @@ class User_Dict(Base):
     """用户-字典-中间表"""
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("user.id", ondelete='CASCADE'))
-    dict_id = Column(Integer, ForeignKey("dict_data.id"))
+    dict_id = Column(Integer, ForeignKey("dict_data.id",ondelete='CASCADE'))
+
+    dict_data = relationship("Dict_Data", backref="user_dict")
+
