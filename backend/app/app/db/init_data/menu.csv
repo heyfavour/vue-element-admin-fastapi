@@ -1,6 +1,6 @@
 id,path,component,external_link,name,title,icon,no_cache,affix,order,parent_id
-516,role,/system/permission/role,0,RolePermission,角色权限,peoples,1,0,5,519.0
 519,/system,,0,,系统管理,system,0,0,1,
+516,role,/system/permission/role,0,RolePermission,角色权限,peoples,1,0,5,519.0
 520,menu,/system/menu/index,0,Menu,菜单管理,tree-table,0,0,2,519.0
 522,dict,/system/dict/index,0,DictType,字典管理,dict,0,0,4,519.0
 524,department,/system/department/index,0,Department,部门管理,tree,0,0,3,519.0
