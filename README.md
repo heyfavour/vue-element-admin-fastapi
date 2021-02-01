@@ -6,7 +6,7 @@ backend:fastapi and Full Stack FastAPI and PostgreSQL
 
 ```
 root:[vue-element-admin-fastapi]
-|--frontend
+|--frontend		#vue-element-admin
 |--backend
 |      |--app
 |      |      |--alembic	#alembic
