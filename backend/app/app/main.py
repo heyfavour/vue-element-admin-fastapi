@@ -32,5 +32,5 @@ if __name__ == '__main__':
     import uvicorn
 
     # Don't set debug/reload equals True,becauese TimedRotatingFileHandler can't support multi-prcoess
-    # or dont't use my LOGGING_CONFIG
+    # or dont't use my LOGGING_CONFIG in debug/reload
     uvicorn.run(app='main:app', host="0.0.0.0", port=8080, log_config=LOGGING_CONFIG)
