@@ -234,7 +234,7 @@ def create_file(db: Session = Depends(deps.get_db), updateSupport: bool = False,
                 db.query(models.User_Dict).filter(models.User_Dict.user_id == exist_user_id).delete()
                 user_dict = [{"user_id": exist_user_id, "dict_id": post.id} for post in posts]
                 db.bulk_insert_mappings(models.User_Dict, user_dict)
-        return {"code": 20000, "detail": "导入成功"}
+        return {"code": 20000, "message": "导入成功"}
     except Exception as exc:
         raise HTTPException(status_code=200, detail=f"导入失败，请检查数据!   Error Reason: {exc}")
     finally:
