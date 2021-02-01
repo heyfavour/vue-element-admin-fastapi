@@ -4,6 +4,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from pydantic import ValidationError
+from sqlalchemy import exc
 from sqlalchemy.orm import Session
 
 from app import crud, models, schemas
@@ -21,11 +22,12 @@ def get_db() -> Generator:
     try:
         db = SessionLocal()
         yield db
-    except Exception as e:
-        db.rollback()
-        backend_logger.error(f"DATABASE ERROR", exc_info=True)
     finally:
-        db.commit()
+        try:
+            db.commit()
+        except exc.SQLAlchemyError:
+            db.rollback()
+            backend_logger.error("ERROR DB COMMIT", exc_info=True)
         db.close()
 
 
