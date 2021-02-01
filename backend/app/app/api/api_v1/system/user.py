@@ -182,7 +182,7 @@ def delete_user(*, db: Session = Depends(deps.get_db), ids: str) -> Any:
     return {"code": 20000, "message": "删除成功", }
 
 
-@router.post("/importData", response_model=schemas.Response, exclude_dependencies=True)
+@router.post("/importData", response_model=schemas.Response)
 def create_file(db: Session = Depends(deps.get_db), updateSupport: bool = False, file: UploadFile = File(...)):
     def check_dict_label(label, code):
         dict = db.query(models.Dict_Data).outerjoin(
