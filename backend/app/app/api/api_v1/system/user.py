@@ -1,10 +1,15 @@
 from typing import Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi import File, UploadFile
 from sqlalchemy.orm import Session, joinedload
+# excel
+from io import BytesIO
+from openpyxl import load_workbook
 
 from app import models, schemas
 from app.api import deps
+from app.core.config import settings
 from app.core.security import get_password_hash
 from app.extensions.utils import list_to_tree
 
@@ -175,3 +180,62 @@ def delete_user(*, db: Session = Depends(deps.get_db), ids: str) -> Any:
     ids = [int(id) for id in ids.split(",")]
     db.query(models.User).filter(models.User.id.in_(ids)).delete(synchronize_session=False)
     return {"code": 20000, "message": "删除成功", }
+
+
+@router.post("/importData", response_model=schemas.Response, exclude_dependencies=True)
+def create_file(db: Session = Depends(deps.get_db), updateSupport: bool = False, file: UploadFile = File(...)):
+    def check_dict_label(label, code):
+        dict = db.query(models.Dict_Data).outerjoin(
+            models.Dict_Type, models.Dict_Type.id == models.Dict_Data.type_id).filter(
+            models.Dict_Data.label == label, models.Dict_Type.code == code).one()
+        return dict
+
+    try:
+        io = BytesIO(file.file.read())
+        wb = load_workbook(io, read_only=True)
+        ws = wb.active  # wb.worksheets[0]
+        for row in ws.iter_rows(min_row=2):
+            # dict_data
+            sex = check_dict_label(row[5].value.strip(""), "sex").label
+            status = check_dict_label(row[6].value.strip(""), "user_status").label
+
+            user = {
+                "username": row[0].value.strip(""),
+                "nickname": row[1].value.strip(""),
+                "identity_card": row[3].value.strip(""),
+                "phone": row[4].value.strip(""),
+                "sex": sex,
+                "status": status,
+                "hashed_password": get_password_hash(settings.INIT_PASSWORD)
+            }
+            department = db.query(models.Department).filter(models.Department.name == row[2].value.strip("")).one()
+            posts = db.query(models.Dict_Data).outerjoin(
+                models.Dict_Type, models.Dict_Type.id == models.Dict_Data.type_id).filter(
+                models.Dict_Data.label.in_(row[7].value.strip("").split(",")), models.Dict_Type.code == "post").all()
+            exist_user = db.query(models.User).filter(models.User.username == user["username"])
+
+            if not exist_user.first():
+                user = models.User(**user)
+                db.add(user)
+                db.flush()
+                user_department = {"user_id": user.id, "department_id": department.id}
+                db.add(models.User_Department(**user_department))
+                user_dict = [{"user_id": user.id, "dict_id": post.id} for post in posts]
+                db.bulk_insert_mappings(models.User_Dict, user_dict)
+            elif updateSupport:
+                exist_user_id = exist_user.one().id
+                exist_user.update(user)
+                db.flush()
+                # department
+                db.query(models.User_Department).filter(models.User_Department.user_id == exist_user_id).delete()
+                user_department = {"user_id": exist_user_id, "department_id": department.id}
+                db.add(models.User_Department(**user_department))
+                # post
+                db.query(models.User_Dict).filter(models.User_Dict.user_id == exist_user_id).delete()
+                user_dict = [{"user_id": exist_user_id, "dict_id": post.id} for post in posts]
+                db.bulk_insert_mappings(models.User_Dict, user_dict)
+        return {"code": 20000, "detail": "导入成功"}
+    except Exception as exc:
+        raise HTTPException(status_code=200, detail=f"导入失败，请检查数据!   Error Reason: {exc}")
+    finally:
+        wb.close()
