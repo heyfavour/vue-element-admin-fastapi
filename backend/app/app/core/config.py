@@ -36,9 +36,9 @@ class Settings():
 
     POSTGRES_SERVER: str = "49.235.242.224:3306"
     POSTGRES_USER: str = "root"
-    POSTGRES_PASSWORD: str = "wzx940516"
+    POSTGRES_PASSWORD: str = ""
     POSTGRES_DB: str = "DWDB"
-    SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = "mysql://root:wzx940516@49.235.242.224/DWDB?charset=utf8"
+    SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = "mysql://root:@49.235.242.224/DWDB?charset=utf8"
 
     # @validator("SQLALCHEMY_DATABASE_URI", pre=True)
     # def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
@@ -47,7 +47,7 @@ class Settings():
     #     return PostgresDsn.build(
     #         scheme="mysql",
     #         user="root",
-    #         password="wzx@940516",
+    #         password="",
     #         host="49.235.242.224",
     #         path=f"/{'DWDB' or ''}",
     #     )
