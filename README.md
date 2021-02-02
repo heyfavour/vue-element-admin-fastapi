@@ -55,15 +55,16 @@ root:[vue-element-admin-fastapi]
 |      |--celery
 ```
 #### socket.io
-frontend:socket.io-client  
+frontend:socket.io-client 
 backend:python-socketio
+前后端版本兼容请去官网检查，我使用的已经是最新的版本
+前端：socket.io-client version 3.X  
+后端：python-socketio  version 5.X
 
 #### celery
 celery-redis  
 start celery:sh backend\app\worker-start.sh   
-DEMO_URL:/utils/test-celery can end email
-
-#### logging
+you can use swagger : http://49.235.242.224:8080/docs/utils/test-celery  try send email by celery,just post your email address
 
 #### middleware
 
