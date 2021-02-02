@@ -5,10 +5,9 @@ from app.db.session import engine
 
 logger = logging.getLogger(__name__)
 
-
 def init_db() -> None:
     # Tables should be created with Alembic migrations
-    init_data_path = os.path.join(os.getcwd(), "db", "init_data")
+    init_data_path = os.path.join(os.path.dirname(__file__), "init_data")
     files = ['department.csv', 'menu.csv', 'role.csv', 'user.csv', 'dict_type.csv', 'dict_data.csv',
              'role_menu.csv', 'user_department.csv', 'user_dict.csv', 'user_role.csv', ]
     for file in files:

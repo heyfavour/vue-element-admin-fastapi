@@ -1,7 +1,6 @@
 import os
 import logging
 
-
 class ErrorlevelFilter(logging.Filter):
     def filter(self, record):
         if record.levelno > logging.INFO:
@@ -55,7 +54,7 @@ LOGGING_CONFIG = {
             'class': 'logging.handlers.TimedRotatingFileHandler',
             'formatter': 'info',
             'filters': ['info_filter'],
-            'filename': os.path.join(os.getcwd(), "..", "..", "..", "logs", "backend", "backend_info.log"),
+            'filename': os.path.join(os.path.dirname(__file__),"..","..", "..", "..", "logs", "backend", "backend_info.log"),
             'when': 'MIDNIGHT',
             'backupCount': 0  # 保留日志备份数量  0默认不删除
         },
@@ -63,7 +62,7 @@ LOGGING_CONFIG = {
             'level': 'ERROR',
             'class': 'logging.handlers.TimedRotatingFileHandler',
             'formatter': 'error',
-            'filename': os.path.join(os.getcwd(), "..", "..", "..", "logs", "backend", "backend_error.log"),
+            'filename': os.path.join(os.path.dirname(__file__),"..","..", "..", "..", "logs", "backend", "backend_error.log"),
             'when': 'MIDNIGHT',
             'backupCount': 0  # 保留日志备份数量  0默认不删除
         },

@@ -1,6 +1,7 @@
 import os
 
-os.sys.path.append(os.path.join(os.getcwd(), ".."))
+# TO SUPPORT RUN python main.py in windows,but I use python "app/main.py" to start in liunx
+os.sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 import fastapi
 from fastapi import routing, FastAPI

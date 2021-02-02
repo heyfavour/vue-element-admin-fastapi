@@ -13,6 +13,6 @@ for table in rows:
     """
 
     df = pd.read_sql(sql,con=engine)
-    file_path = os.path.join(os.getcwd() ,"init_data",f"{table_name}.csv")
+    file_path = os.path.join(os.path.dirname(__file__) ,"init_data",f"{table_name}.csv")
     print(file_path)
     df.to_csv(file_path,index=0)
