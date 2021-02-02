@@ -579,7 +579,6 @@ export default {
       this.upload.open = false
       this.upload.isUploading = false
       this.$refs.upload.clearFiles()
-      console.log(response)
       this.$alert(response.detail || response.message, '导入结果', { dangerouslyUseHTMLString: true })
       this.getList()
     },
