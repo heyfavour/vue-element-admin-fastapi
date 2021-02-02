@@ -15,7 +15,7 @@ def test_celery(email: schemas.Email,) -> Any:
     """
     Test Celery worker.
     """
-    result = celery_app.send_task("app.celery_app.worker.example.test_celery", args=[email.msg])
+    result = celery_app.send_task("app.celery_app.worker.example.test_celery", args=[email.email])
     # result.get()
     return {"msg": "Word received"}
 
