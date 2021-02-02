@@ -2,9 +2,15 @@
 """
     启动脚本 - backend/app/celery_worker_start.sh
     #linux
+    # CELERY 4
     celery worker -A app.celery_app.worker.example -l info -Q main-queue -c 1
+    # CELERY 5
+    celery  -A app.celery_app.worker.example  worker -l info -Q main-queue -c 1
     #win
+    # CELERY 4
     celery worker -A app.celery_app.worker.example -l info -Q main-queue -c 1  -P eventlet
+    # CELERY 5
+    celery  -A app.celery_app.worker.example worker -l info -Q main-queue -c 1  -P eventlet
 
     CMD后台启动一个或多个职程
     celery multi start w1 -A {worker_name} -l info
