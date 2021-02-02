@@ -56,7 +56,7 @@ class Settings():
     SMTP_PORT: Optional[int] = 587
     SMTP_HOST: Optional[str] = "smtp.qq.com"
     SMTP_USER: Optional[str] = "619511821@qq.com"
-    SMTP_PASSWORD: Optional[str] = "efgjrswetsnybdif"
+    SMTP_PASSWORD: Optional[str] = ""
     EMAILS_FROM_EMAIL: Optional[EmailStr] = "619511821@qq.com"
     EMAILS_FROM_NAME: Optional[str] = "Mr.Wang"
 
