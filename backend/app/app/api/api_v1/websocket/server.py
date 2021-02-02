@@ -1,22 +1,34 @@
 #!/usr/bin/env python
 import socketio
 import psutil
+import threading
 from app.extensions.utils import round_float
 
+lock = threading.Lock()
+
 background_task_started = False
+client_connecting = 0
 
 
 class ServerNamespace(socketio.AsyncNamespace):
 
     async def on_connect(self, sid, environ):
-        # print(f"{sid} is connected !")
-        global background_task_started
+        global background_task_started, client_connecting
+        lock.acquire()
+        client_connecting = client_connecting + 1
+        lock.release()
         if not background_task_started:
             self.server.start_background_task(self.background_task)
             background_task_started = True
         # self.emit('my_response', {'data': 'Connected', 'count': 0}, room=sid)
 
     async def on_disconnect(self, sid):
+        global background_task_started,client_connecting
+        lock.acquire()
+        client_connecting = client_connecting - 1
+        lock.release()
+        if client_connecting == 0:
+            background_task_started = False
         print(f"{sid} is disconnected !")
 
     async def on_disconnect_request(self, sid):
@@ -47,8 +59,9 @@ class ServerNamespace(socketio.AsyncNamespace):
         await self.close_room(message['room'])
 
     async def background_task(self):
-        while True:
-            sys_info =await self.get_sys_info()
+        global background_task_started
+        while background_task_started:
+            sys_info = await self.get_sys_info()
             await self.emit('monitor_server', sys_info)
             await self.server.sleep(1.5)
 
@@ -71,4 +84,3 @@ class ServerNamespace(socketio.AsyncNamespace):
         }
         sys_info["memory_info"] = memory_info
         return sys_info
-
