@@ -13,6 +13,7 @@ client_connecting = 0
 class ServerNamespace(socketio.AsyncNamespace):
 
     async def on_connect(self, sid, environ):
+        print(f"{sid} is connected !")
         global background_task_started, client_connecting
         lock.acquire()
         client_connecting = client_connecting + 1
@@ -23,13 +24,14 @@ class ServerNamespace(socketio.AsyncNamespace):
         # self.emit('my_response', {'data': 'Connected', 'count': 0}, room=sid)
 
     async def on_disconnect(self, sid):
+        print(f"{sid} is disconnected !")
         global background_task_started,client_connecting
         lock.acquire()
         client_connecting = client_connecting - 1
         lock.release()
         if client_connecting == 0:
             background_task_started = False
-        print(f"{sid} is disconnected !")
+
 
     async def on_disconnect_request(self, sid):
         await self.on_disconnect(sid)
