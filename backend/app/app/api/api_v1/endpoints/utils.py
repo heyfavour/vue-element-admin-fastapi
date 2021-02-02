@@ -12,11 +12,11 @@ router = APIRouter()
 
 
 @router.post("/test-celery/", response_model=schemas.Msg, status_code=201)
-def test_celery1(msg: schemas.Msg,) -> Any:
+def test_celery(email: schemas.Msg,) -> Any:
     """
     Test Celery worker.
     """
-    result = celery_app.send_task("app.celery_app.worker.example.test_celery", args=[msg.msg])
+    result = celery_app.send_task("app.celery_app.worker.example.test_celery", args=[email.msg])
     # result.get()
     return {"msg": "Word received"}
 
