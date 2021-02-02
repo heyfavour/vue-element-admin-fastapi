@@ -133,7 +133,6 @@ export default {
     this.socket = io('http://127.0.0.1:8080/server', {
       transports: ['websocket']
     })
-    this.socket.emit('connect')
     this.socket.on('monitor_server', function(data) {
       if (_this.loading) {
         _this.loading = false
@@ -144,6 +143,9 @@ export default {
         _this.server.mem = data.memory_info
       }
     })
+  },
+  beforeDestroy() {
+    this.socket.close()
   },
   methods: {}
 }
