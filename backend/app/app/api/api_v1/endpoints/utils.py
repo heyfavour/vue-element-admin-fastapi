@@ -1,10 +1,9 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from pydantic.networks import EmailStr
 
-from app import models, schemas
-from app.api import deps
+from app import schemas
 from app.celery_app.celery_app import celery_app
 from app.extensions.utils import send_test_email
 
@@ -12,7 +11,7 @@ router = APIRouter()
 
 
 @router.post("/test-celery/", response_model=schemas.Msg, status_code=201)
-def test_celery(email: schemas.Msg,) -> Any:
+def test_celery(email: schemas.Email,) -> Any:
     """
     Test Celery worker.
     """

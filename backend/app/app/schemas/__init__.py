@@ -1,4 +1,4 @@
-from .msg import Msg
+from .msg import Msg,Email
 from .token import Token, TokenPayload
 from .user import *
 from .reponse import Response
