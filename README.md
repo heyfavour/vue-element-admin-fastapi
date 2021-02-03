@@ -77,5 +77,44 @@ you can use swagger : http://49.235.242.224:8080/docs  api:/utils/test-celery  t
 1.模块化  
 2.router.include_router下对根路由的RESTFUL请求需要结尾加"/",这个需要前端配合，其他都不需要加"/"
 
+
+#### 如何快速本地启动
+##### ip及数据库连接
+```
+frontend
+#websocket连接的ip
+vue-element-admin-fastapi\frontend\src\views\monitor\server\index.vue 
+#开发环境连接的后端ip
+vue-element-admin-fastapi\frontend\.env.development	
+#生产环境连接的后端ip
+vue-element-admin-fastapi\frontend\.env.production	
+
+backend
+#alembic的数据库连接
+vue-element-admin-fastapi\backend\app\alembic\env.py
+#后端的数据库连接
+vue-element-admin-fastapi\backend\app\app\core\config.py
+#celery的数据库连接
+vue-element-admin-fastapi\backend\app\app\celery_app\celery_app.py
+```
+##### 数据准备
+vue-element-admin-fastapi\backend\app\prestart.sh
+```
+#检查数据库连接
+python /app/app/db_pre_start/backend_pre_start.py
+#alembic初始化本地表结构
+alembic revision --autogenerate -m "first commit"
+alembic upgrade head
+#初始化数据
+python /app/app/initial_data.py
+```
+##### 开发环境启动
+```
+frontend:npm run dev
+backend:python main.py
+celery:见启动脚本
+```
+
+
 #### 联系方式:
 QQ：619511821
