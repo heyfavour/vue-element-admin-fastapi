@@ -20,7 +20,7 @@ class UserBase(BaseModel):
     hashed_password: str = get_password_hash(settings.INIT_PASSWORD)
     # avatar: Optional[str] = None
     introduction: Optional[str] = None
-    is_active: Optional[bool] = False
+    is_active: Optional[bool] = True
 
 
 # Properties to receive via API on creation
