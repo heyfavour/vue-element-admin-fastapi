@@ -34,10 +34,6 @@ class Settings():
     #         return None
     #     return v
 
-    POSTGRES_SERVER: str = "49.235.242.224:3306"
-    POSTGRES_USER: str = "root"
-    POSTGRES_PASSWORD: str = ""
-    POSTGRES_DB: str = "DWDB"
     SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = "mysql://root:@49.235.242.224/DWDB?charset=utf8"
 
     # @validator("SQLALCHEMY_DATABASE_URI", pre=True)
