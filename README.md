@@ -79,6 +79,11 @@ you can use swagger : http://49.235.242.224:8080/docs  api:/utils/test-celery  t
 
 
 #### 如何快速本地启动
+##### python packages
+```
+cd vue-element-admin-fastapi\backend\app
+pip install -r pyproject.toml
+```
 ##### ip及数据库连接
 ```
 frontend
