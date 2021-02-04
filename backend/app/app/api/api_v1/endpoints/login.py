@@ -42,7 +42,7 @@ def login_access_token(db: Session = Depends(deps.get_db), form_data: OAuth2Pass
         raise HTTPException(status_code=400, detail="Inactive user")
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {
-        "token": security.create_access_token(user.id, expires_delta=access_token_expires),
+        "access_token": security.create_access_token(user.id, expires_delta=access_token_expires),
         "token_type": "bearer",
     }
 
