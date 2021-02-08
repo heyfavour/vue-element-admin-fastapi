@@ -82,7 +82,7 @@ you can use swagger : http://49.235.242.224:8080/docs  api:/utils/test-celery  t
 ##### python packages
 ```
 cd vue-element-admin-fastapi\backend\app
-pip install -r pyproject.toml
+pip install -r requirements.txt
 ```
 ##### ip及数据库连接
 ```
