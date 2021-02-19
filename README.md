@@ -73,7 +73,7 @@ you can use swagger : http://49.235.242.224:8080/docs  api:/utils/test-celery  t
 axios发送get请求携带token,通过访问header['content-disposition']获取文件名(需要后端设置Access-Control-Expose-Headers)
 
 frontend:frontend\vue-element-admin-fastapi\frontend\src\utils\ruoyi.js   function download
-backend:backend\app\app\api\api_v1\report\\__init__.py
+backend:backend\app\app\api\api_v1\report\```__init__```.py
 
 
 
