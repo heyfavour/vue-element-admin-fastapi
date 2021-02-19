@@ -78,6 +78,7 @@ def calculate_header_rows(header):
 
 def gen_template_with_data(ws, start, data):
     for row_index, row in enumerate(data):
+        if not type(row) == list:row=row.list()
         for col_index, col in enumerate(row):
             ws.cell(row=start + row_index, column=col_index + 1).value = col
 
