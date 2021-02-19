@@ -69,6 +69,15 @@ you can use swagger : http://49.235.242.224:8080/docs  api:/utils/test-celery  t
 #### middleware
 
 
+#### EXCEL敏捷开发
+```
+#前端原本使用window.location.href直接下载后端接口的excel,但是这种方法无法携带token
+frontend:frontend\vue-element-admin-fastapi\frontend\src\utils\ruoyi.js   function download
+		 axios发送get请求携带token,通过访问header['content-disposition']获取文件名(需要后端设置Access-Control-Expose-Headers)
+backend:backend\app\app\api\api_v1\report\__init__.py
+```
+
+
 #### DEMO:http://49.235.242.224:9527/ 
 
 
