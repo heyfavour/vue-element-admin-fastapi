@@ -18,7 +18,3 @@ class Base:
 
     def list(self):
         return [getattr(self, c.name, None) for c in self.__table__.columns]
-
-
-
-
