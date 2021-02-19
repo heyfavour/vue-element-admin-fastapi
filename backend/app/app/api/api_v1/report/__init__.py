@@ -10,7 +10,7 @@ from app.api.api_v1.report.gen_report import Report
 router = APIRouter()
 
 
-@router.get("/report/excel_generate/{excel_name}", tags=["report"], exclude_dependencies=True)
+@router.get("/report/excel_generate/{excel_name}", tags=["report"])
 def excel_generate(*, excel_name: str = "", request: Request, db: Session = Depends(deps.get_db)) -> Any:
     """
     通过动态import的形式，统一处理excel:模板下载/数据导出
