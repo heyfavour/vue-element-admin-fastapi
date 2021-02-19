@@ -21,4 +21,8 @@ def excel_generate(*, excel_name: str = "", request: Request, db: Session = Depe
     else:
         bio = report.get_instance(db)  # 实例
     file_name = report.file_name.encode('utf-8').decode('latin1')
-    return StreamingResponse(bio, headers={'Content-Disposition': f'attachment; filename={file_name}.xlsx'})
+    headers = {
+        'Access-Control-Expose-Headers': 'content-disposition',
+        'Content-Disposition': f'attachment; filename={file_name}.xlsx'
+    }
+    return StreamingResponse(bio, headers=headers)
