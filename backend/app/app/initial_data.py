@@ -1,4 +1,6 @@
 import logging
+import os
+os.sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from app.db.init_db import init_db
 
