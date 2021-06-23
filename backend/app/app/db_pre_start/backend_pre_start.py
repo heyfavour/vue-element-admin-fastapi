@@ -1,5 +1,5 @@
 import os
-os.sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+# os.sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 import logging
 
