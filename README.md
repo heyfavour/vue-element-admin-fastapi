@@ -1,5 +1,5 @@
 # vue-element-admin-fastapi
-vue-element-admin-fastpai
+vue-element-admin-fastapi
   
 frontend:vue-element-admin  
 backend:fastapi and Full Stack FastAPI and PostgreSQL
