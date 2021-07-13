@@ -18,3 +18,7 @@ def init_db() -> None:
             df['name'] = df['name'].apply(lambda x: '' if pd.isnull(x) else x)
         logger.info(f"{file}  load successed")
         df.to_sql(file.replace(".csv", ""), engine, if_exists="append", index=False)
+        # To upgrade sequence
+        last_seq = engine.execute(f"select MAX(id) from public.{file.replace('.csv', '')};").fetchall()
+        logger.info(f"max id is {last_seq[0][0]}")
+        engine.execute(f"alter sequence {file.replace('.csv', '')}_id_seq restart with {last_seq[0][0] + 1};")
