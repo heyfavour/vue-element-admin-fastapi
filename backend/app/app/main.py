@@ -1,16 +1,8 @@
 import os
-
 # TO SUPPORT RUN python main.py in windows,but I use python "app/main.py" to start in liunx
 os.sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-import fastapi
-from fastapi import routing, FastAPI
-from app.extensions.routing import APIRouter as MyAPIRouter, APIRoute as MyAPIRoute
-
-# rewrite APIRouter and APIRoute and add parameter exclude_dependencies to deny global dependencies
-fastapi.APIRouter = routing.APIRouter = MyAPIRouter
-fastapi.APIRoute = routing.APIRoute = MyAPIRoute
-
+from fastapi import FastAPI
 from app.core.config import settings
 from app.api.api_v1.api import api_router
 from app.api.api_v1.websocket import socket_app
