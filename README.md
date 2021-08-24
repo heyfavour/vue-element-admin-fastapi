@@ -38,7 +38,6 @@ root:[vue-element-admin-fastapi]
 |      |      |      |--extensions
 |      |      |      |      |--exception.py	#全局异常捕获 暂时没有使用的需要,所以没用
 |      |      |      |      |--logger.py	#替代原来的日志
-|      |      |      |      |--routing.py	#重写路由器  支持exclude_dependencies参数=>支持全局登陆验证剔除login端口 或者你可以通过单独挂载一个新的路由器来避免全局变量
 |      |      |      |      |--utils.py		#utils 主要使用了其中的list_to_tree
 |      |      |      |--initial_data.py		#初始化数据
 |      |      |      |--main.py
