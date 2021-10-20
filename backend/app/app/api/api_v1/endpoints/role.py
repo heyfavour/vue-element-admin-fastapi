@@ -71,6 +71,7 @@ def update_role(*, db: Session = Depends(deps.get_db), id: str, role_in: schemas
     menus_list = dfs_tree_to_list(role_in.routes)
     menus_list = [models.Role_Menu(**{"role_id": role.one().id, "menu_id": menu_id}) for menu_id in menus_list]
     db.bulk_save_objects(menus_list)
+    db.commit()
     return {"code": 20000, "data": {"status": "success"}}
 
 
@@ -86,6 +87,7 @@ def create_role(*, db: Session = Depends(deps.get_db), role_create: schemas.Role
     menus_list = dfs_tree_to_list(role_create.routes)
     menus_list = [models.Role_Menu(**{"role_id": role.id, "menu_id": menu_id}) for menu_id in menus_list]
     db.bulk_save_objects(menus_list)
+    db.commit()
     return {"code": 20000, "data": {"id": role.id}}
 
 
@@ -93,4 +95,5 @@ def create_role(*, db: Session = Depends(deps.get_db), role_create: schemas.Role
 def delete_role(*, db: Session = Depends(deps.get_db), id: str, ) -> Any:
     """Delete an Role."""
     db.query(models.Role).filter(models.Role.id == id).delete()
+    db.commit()
     return {"code": 20000, "data": {"status": "success"}}

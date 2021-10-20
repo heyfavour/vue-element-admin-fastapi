@@ -40,6 +40,7 @@ def read_dict_type(*, db: Session = Depends(deps.get_db), id: int, ) -> Any:
 def update_dict_type(*, db: Session = Depends(deps.get_db), type: schemas.DictTypeUpdate, ) -> Any:
     """字典管理-更新"""
     db.query(models.Dict_Type).filter(models.Dict_Type.id == type.id).update(type)
+    db.commit()
     return {"code": 20000, "message": "修改成功", }
 
 
@@ -48,6 +49,7 @@ def delete_type_id(type_id: str, db: Session = Depends(deps.get_db), ) -> Any:
     """字典管理-删除"""
     type_ids = [int(type_id) for type_id in type_id.split(",")]
     db.query(models.Dict_Type).filter(models.Dict_Type.id.in_(type_ids)).delete(synchronize_session=False)
+    db.commit()
     return {"code": 20000, "data": "", "message": f"删除成功"}
 
 
@@ -55,6 +57,7 @@ def delete_type_id(type_id: str, db: Session = Depends(deps.get_db), ) -> Any:
 def add_type(*, db: Session = Depends(deps.get_db), type: schemas.DictTypeCreate, ) -> Any:
     """字典管理 新增"""
     db.add(models.Dict_Type(**type.dict()))
+    db.commit()
     return {"code": 20000, "message": "新增成功", }
 
 
@@ -81,6 +84,7 @@ def read_data(*, db: Session = Depends(deps.get_db), id: int) -> Any:
 def add_dict_data(*, db: Session = Depends(deps.get_db), data: schemas.DictDataUpdate, ) -> Any:
     """字典数据明细-修改"""
     db.query(models.Dict_Data).filter(models.Dict_Data.id == data.id).update(data)
+    db.commit()
     return {"code": 20000, "message": "修改成功", }
 
 
@@ -88,6 +92,7 @@ def add_dict_data(*, db: Session = Depends(deps.get_db), data: schemas.DictDataU
 def add_data(*, db: Session = Depends(deps.get_db), data: schemas.DictDataCreate, ) -> Any:
     """字典数据明细-新增"""
     db.add(models.Dict_Data(**data.dict()))
+    db.commit()
     return {"code": 20000, "message": "新增成功", }
 
 
@@ -96,6 +101,7 @@ def delete_data_id(data_id: str, db: Session = Depends(deps.get_db)) -> Any:
     """字典数据明细-删除"""
     data_ids = [int(type_id) for type_id in data_id.split(",")]
     db.query(models.Dict_Data).filter(models.Dict_Data.id.in_(data_ids)).delete(synchronize_session=False)
+    db.commit()
     return {"code": 20000, "data": "", "message": f"删除成功"}
 
 

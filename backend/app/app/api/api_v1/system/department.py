@@ -21,6 +21,7 @@ def get_departments(db: Session = Depends(deps.get_db), ) -> Any:
 def add_department(*, db: Session = Depends(deps.get_db), department: schemas.DepartmentCreate) -> Any:
     """部门管理-新增"""
     db.add(models.Department(**department.dict()))
+    db.commit()
     return {"code": 20000, "data": "", "message": "新增部门成功"}
 
 
@@ -43,6 +44,7 @@ def get_department_exclude_id(*, db: Session = Depends(deps.get_db), id: int, ) 
 def update_department(*, db: Session = Depends(deps.get_db), department: schemas.DepartmentUpdate) -> Any:
     """部门管理-修改"""
     db.query(models.Department).filter(models.Department.id == department.id).update(department)
+    db.commit()
     return {"code": 20000, "message": "修改成功", }
 
 
@@ -52,4 +54,5 @@ def delete_department_id(department_id: int, db: Session = Depends(deps.get_db),
     users = db.query(models.User_Department).filter(models.User_Department.department_id == department_id).all()
     if users != []: raise HTTPException(status_code=200, detail="该部门下存在员工，禁止删除")
     db.query(models.Department).filter(models.Department.id == department_id).delete()
+    db.commit()
     return {"code": 20000, "message": f"删除成功"}

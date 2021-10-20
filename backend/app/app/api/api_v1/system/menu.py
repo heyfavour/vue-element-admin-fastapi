@@ -30,6 +30,7 @@ def read_menu_id(menu_id: int, db: Session = Depends(deps.get_db), ) -> Any:
 def update_menu(*, db: Session = Depends(deps.get_db), menu_in: schemas.MenuUpdate) -> Any:
     """update a specific menu by id."""
     db.query(models.Menu).filter(models.Menu.id == menu_in.id).update(menu_in)
+    db.commit()
     return {"code": 20000, "data": "", "message": "修改成功", }
 
 
@@ -37,6 +38,7 @@ def update_menu(*, db: Session = Depends(deps.get_db), menu_in: schemas.MenuUpda
 def delete_menu_id(menu_id: int, db: Session = Depends(deps.get_db), ) -> Any:
     """Delete a specific menu by id."""
     db.query(models.Menu).filter(models.Menu.id == menu_id).delete()
+    db.commit()
     return {"code": 20000, "data": "", "message": f"删除成功"}
 
 
@@ -44,4 +46,5 @@ def delete_menu_id(menu_id: int, db: Session = Depends(deps.get_db), ) -> Any:
 def post_menu(*, db: Session = Depends(deps.get_db), menu: schemas.MenuCreate, ) -> Any:
     """Add a specific menu"""
     db.add(models.Menu(**menu.dict()))
+    db.commit()
     return {"code": 20000, "data": "", "message": "新增菜单成功"}

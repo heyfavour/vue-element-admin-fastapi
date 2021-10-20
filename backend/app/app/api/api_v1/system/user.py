@@ -129,6 +129,7 @@ def update_user(*, db: Session = Depends(deps.get_db), user: schemas.UserUpdate)
     user_dict = user_post + []
     db.bulk_insert_mappings(models.User_Dict, user_dict)
     db.flush()
+    db.commit()
     return {"code": 20000, "message": "修改成功"}
 
 
@@ -157,6 +158,7 @@ def add_user(*, db: Session = Depends(deps.get_db), user: schemas.UserCreate) ->
     user_dict = user_post + []
     db.bulk_insert_mappings(models.User_Dict, user_dict)
     db.flush()
+    db.commit()
     return {"code": 20000, "message": "新增成功", }
 
 
@@ -170,6 +172,7 @@ def reset_password(*,
     data = {"hashed_password": get_password_hash(reset.password)}
     if User.is_superuser or User.id == reset.user_id:  # 只允许超级管理员和用户本人重置密码
         db.query(models.User).filter(models.User.id == reset.user_id).update(data)
+        db.commit()
         return {"code": 20000, "message": "修改成功"}
     raise HTTPException(status_code=400, detail="无重置密码权限")
 
@@ -179,6 +182,7 @@ def delete_user(*, db: Session = Depends(deps.get_db), ids: str) -> Any:
     """用户管理-删除用户"""
     ids = [int(id) for id in ids.split(",")]
     db.query(models.User).filter(models.User.id.in_(ids)).delete(synchronize_session=False)
+    db.commit()
     return {"code": 20000, "message": "删除成功", }
 
 
@@ -234,6 +238,7 @@ def create_file(db: Session = Depends(deps.get_db), updateSupport: bool = False,
                 db.query(models.User_Dict).filter(models.User_Dict.user_id == exist_user_id).delete()
                 user_dict = [{"user_id": exist_user_id, "dict_id": post.id} for post in posts]
                 db.bulk_insert_mappings(models.User_Dict, user_dict)
+        db.commit()
         return {"code": 20000, "message": "导入成功"}
     except Exception as exc:
         raise HTTPException(status_code=200, detail=f"导入失败，请检查数据!   Error Reason: {exc}")

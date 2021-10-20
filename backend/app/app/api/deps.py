@@ -11,7 +11,7 @@ from app import crud, models, schemas
 from app.core import security
 from app.core.config import settings
 from app.db.session import SessionLocal
-from app.extensions.logger import backend_logger
+# from app.extensions.logger import backend_logger
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"
@@ -23,11 +23,12 @@ def get_db() -> Generator:
         db = SessionLocal()
         yield db
     finally:
-        try:
-            db.commit()
-        except exc.SQLAlchemyError:
-            db.rollback()
-            backend_logger.error("ERROR DB COMMIT", exc_info=True)
+        # try:
+        #     print(datetime.datetime.now(), "commit")
+        #     db.commit()
+        # except exc.SQLAlchemyError:
+        #     db.rollback()
+        #     backend_logger.error("ERROR DB COMMIT", exc_info=True)
         db.close()
 
 
