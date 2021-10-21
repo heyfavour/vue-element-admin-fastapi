@@ -13,7 +13,7 @@ gunicorn
 jinja2
 psycopg2-binary
 alembic
-sqlalchemy
+sqlalchemy==1.3.22
 pytest
 python-jose
 aiofiles
