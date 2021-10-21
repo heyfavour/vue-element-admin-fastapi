@@ -2,7 +2,9 @@ from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, DateTime, D
 from sqlalchemy.orm import relationship, backref
 import datetime
 from app.db.base_class import Base
-
+"""
+relationship 自引用加入remote_side use_list=False -> one-to-one 默认use_list=True
+"""
 
 class Dict_Type(Base):
     """数据字典"""
@@ -29,7 +31,7 @@ class Dict_Data(Base):
 
 class Department(Base):
     """部门表"""
-    __table_args__ = {"useexisting": True}
+    # __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     code = Column(String(128), doc="部门代码")
@@ -40,13 +42,13 @@ class Department(Base):
     start_date = Column(Date, default=datetime.date.today())
     end_date = Column(Date, default='3000-12-31')
 
-    children = relationship('Department', uselist=True, order_by=order.asc(),
-                            backref=backref('parent', uselist=True, remote_side=[id]))
+    children = relationship('Department', order_by=order.asc(),
+                                backref=backref('parent',uselist=False,remote_side=[id]))
 
 
 class Menu(Base):
     """ 菜单表"""
-    __table_args__ = {"useexisting": True}
+    # __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     path = Column(String(128), doc="路由")
@@ -65,5 +67,6 @@ class Menu(Base):
     parent_id = Column(Integer, ForeignKey("menu.id", ondelete='CASCADE'), index=True,
                        nullable=True, )  # ondelete='CASCADE' 联级删除
 
-    parent = relationship('Menu', uselist=True, remote_side=[id], backref=backref('children', uselist=True))
+    parent = relationship('Menu', remote_side=[id],uselist=False,order_by=order.asc(),
+                          backref=backref('children'))
     role_menu = relationship("Role_Menu", backref="menu")
