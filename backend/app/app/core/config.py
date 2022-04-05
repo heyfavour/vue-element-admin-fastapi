@@ -42,9 +42,9 @@ class Settings():
     #         return v
     #     return PostgresDsn.build(
     #         scheme="mysql",
-    #         user="root",
+    #         user="user",
     #         password="",
-    #         host="49.235.242.224",
+    #         host="ip",
     #         path=f"/{'DWDB' or ''}",
     #     )
 
