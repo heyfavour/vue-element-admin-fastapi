@@ -38,6 +38,7 @@ root:[vue-element-admin-fastapi]
 |      |      |      |--extensions
 |      |      |      |      |--exception.py	#全局异常捕获 暂时没有使用的需要,所以没用
 |      |      |      |      |--logger.py	#替代原来的日志
+|      |      |      |      |--request_id.py	#日志全链路追踪
 |      |      |      |      |--utils.py		#utils 主要使用了其中的list_to_tree
 |      |      |      |--initial_data.py		#初始化数据
 |      |      |      |--main.py
