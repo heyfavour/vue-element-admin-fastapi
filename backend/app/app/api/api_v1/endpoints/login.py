@@ -9,6 +9,7 @@ from app import crud, models, schemas
 from app.api import deps
 from app.core import security
 from app.core.config import settings
+from app.extensions.logger import backend_logger
 
 router = APIRouter()
 
@@ -49,5 +50,5 @@ def login_access_token(db: Session = Depends(deps.get_db), form_data: OAuth2Pass
 
 @router.post("/logout", response_model=schemas.Response)
 def logout() -> Any:
-    """logout"""
+    backend_logger.info("logout")
     return {"code": 20000, "data": {"logout": True}, "message": "", }
