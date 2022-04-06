@@ -24,3 +24,4 @@ bcrypt
 mysqlclient
 redis
 numpy
+starlette-context
