@@ -140,3 +140,10 @@ QQ：619511821
 
 #### TODO
 计划今年升级到sqlalchemy1.4
+
+#### 待框架解决问题
+中间件日志记录参数问题
+uvicorn ->app(revice,send) -> receive = queue.get()->api(revice)->send
+以上是请求流程，如果在中间件中使用request.body() or reqeust.receive 就会导致queue中的参数被消耗掉,导致中间件的call_next block
+有人采用重写reqeust.receive的办法，但是这种办法会导致streambody or 巨大的body无法获取的问题(框架通过more body = True 多次receive，重写后循环获取无法停止)。
+fastapi作者尝试在apirouter中记录参数日志。但是个人觉得这种方法很不python，所以暂不采用。
