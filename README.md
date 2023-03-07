@@ -64,8 +64,6 @@ backend:python-socketio
 #### celery
 celery-redis  
 start celery:sh backend\app\worker-start.sh   
-you can use swagger : http://49.235.242.224:8080/docs  api:/utils/test-celery  try send email by celery,just post your email address
-
 #### middleware
 
 
@@ -77,7 +75,7 @@ backend:backend\app\app\api\api_v1\report\\_\_init\_\_.py
 
 
 
-#### DEMO:http://49.235.242.224:9527/ 
+#### DEMO:服务器到期了,暂时不续
 
 
 
