@@ -21,7 +21,7 @@ psutil = "^5.8.0"
 alembic = "^1.5.4"
 python-socketio = "^5.0.4"
 mysqlclient = "^2.0.3"
-redis = "^3.5.3"
+redis = "^4.4.4"
 bcrypt = "^3.2.0"
 
 [tool.poetry.dev-dependencies]
